@@ -6,6 +6,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+# 2017.05.22 Dagang note, gems needed to run materialize on rails
 gem 'materialize-sass'
 gem 'material_icons'
 
