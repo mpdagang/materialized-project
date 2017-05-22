@@ -1,0 +1,2 @@
+class JeepneysController < ApplicationController
+end
