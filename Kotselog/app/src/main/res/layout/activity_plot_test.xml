@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:ap="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.mpdagang.kotselog.LogBook.PlotTest">
+
+    <com.androidplot.xy.XYPlot
+        style="@style/APDefacto.Dark"
+        android:id="@+id/dynamicXYPlot"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        androidplot.renderMode="use_background_thread"
+        ap:title="A Dynamic XY Plot"
+        ap:domainTitle="Domain"
+        ap:rangeTitle="Range"
+        ap:legendTextSize="15sp"
+        ap:legendIconHeight="15dp"
+        ap:legendIconWidth="15dp"
+        ap:legendHeight="25dp"
+        ap:legendAnchor="right_bottom"/>
+
+    <com.androidplot.xy.XYPlot
+        style="@style/APDefacto.Dark"
+        android:id="@+id/dynamicXYPlot2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        androidplot.renderMode="use_background_thread"
+        ap:title="A Dynamic XY Plot"
+        ap:domainTitle="Domain"
+        ap:rangeTitle="Range"
+        ap:legendTextSize="15sp"
+        ap:legendIconHeight="15dp"
+        ap:legendIconWidth="15dp"
+        ap:legendHeight="25dp"
+        ap:legendAnchor="right_bottom"/>
+
+    <com.androidplot.xy.XYPlot
+        style="@style/APDefacto.Dark"
+        android:id="@+id/dynamicXYPlot3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        androidplot.renderMode="use_background_thread"
+        ap:title="A Dynamic XY Plot"
+        ap:domainTitle="Domain"
+        ap:rangeTitle="Range"
+        ap:legendTextSize="15sp"
+        ap:legendIconHeight="15dp"
+        ap:legendIconWidth="15dp"
+        ap:legendHeight="25dp"
+        ap:legendAnchor="right_bottom"/>
+
+</LinearLayout>

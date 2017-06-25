@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Kotselog</string>
+
+    <!-- String for NavFrag-->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_header">Welcome</string>
+    <string name="nav_button1">Start Connection</string>
+    <string name="nav_button2">Car Information</string>
+    <string name="nav_button3">Car OBD</string>
+    <string name="nav_button4">Trouble Codes</string>
+    <string name="nav_button5">Adapter Terminal</string>
+    <string name="nav_button6">Log Book</string>
+    <string name="nav_button7">Settings</string>
+
+    <!-- String for StartConFrag -->
+    <string name="start_con">Connect to adapter</string>
+    <string name="disc_adapter">Discover adapter</string>
+    <string name="adapter_info">Adapter Information</string>
+    <string name="back_button">Back</string>
+
+    <!-- String for Log book -->
+    <string name="gen_excel">Generate Excel</string>
+</resources>
