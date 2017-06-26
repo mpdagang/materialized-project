@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.UUID;
 
@@ -23,11 +24,15 @@ public class MainActivity extends AppCompatActivity {
 
     public BluetoothConnectionService mBlueConServ;
     public StringBuilder mainResponse;
+    public String curResponse;
 
     public BroadcastReceiver mainReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "mainReceiver: received response from incomingMessageIntent");
+            String text = intent.getStringExtra("theMessage");
+            mainResponse.append(text);
+            curResponse = text;
         }
     };
 
@@ -40,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
         mSectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
         LocalBroadcastManager.getInstance(this).registerReceiver(mainReceiver, new IntentFilter("incomingMessage"));
-
+        mainResponse = new StringBuilder();
+        curResponse = new String();
         mViewPager = (ViewPager) findViewById(R.id.container);
         setupViewPager(mViewPager);
     }
@@ -64,6 +70,28 @@ public class MainActivity extends AppCompatActivity {
     }
     public void writeToStream(byte[] bytes){
         mBlueConServ.write(bytes);
+
+    }
+
+    public String getValueOfCommand(byte[] bytes){
+        mainResponse = new StringBuilder();
+        curResponse = new String();
+        mBlueConServ.write(bytes);
+
+        Runnable waiter = new Runnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                while(!curResponse.contains(">")){
+                    i=i+1;
+                }
+                Log.d(TAG, "whole response built" + mainResponse);
+            }
+        };
+        new Thread(waiter).start();
+
+        Toast.makeText(this, "Response is " + mainResponse + "message", Toast.LENGTH_SHORT).show();
+        return mainResponse.toString().replaceAll("\n", " ");
     }
     //-------------------------------Classes-------------------------------
 }

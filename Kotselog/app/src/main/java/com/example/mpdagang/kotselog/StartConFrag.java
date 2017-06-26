@@ -30,34 +30,26 @@ import java.util.UUID;
 
 
 public class StartConFrag extends Fragment implements AdapterView.OnItemClickListener{
-
     private static final String TAG = "StartConFragment";
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     public BluetoothAdapter mBluetoothAdapter;
-    public Button btnEnableDisable_Discoverable;
-    public Button btnDiscoverDev;
-    public BluetoothConnectionService mBluetoothConnection;
+    public BluetoothDevice mBTDevice;
+    public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+    public DeviceListAdapter mDeviceListAdapter;
 
-    public Button btnStartConnection;
-    public Button btnSend;
-
-    public TextView incomingMessages;
     public StringBuilder messages;
     public StringBuilder wholeResponse;
 
+    public Button btnEnableDisable_Discoverable;
+    public Button btnDiscoverDev;
+    public Button btnStartConnection;
+    public Button btnSend;
+    public Button backBtn;
+    public Button btnONOFF;
     public EditText etSend;
-
-    private static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
-    public BluetoothDevice mBTDevice;
-
-    public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
-
-    public DeviceListAdapter mDeviceListAdapter;
-
     public ListView lvNewDevices;
-
-    private Button backBtn;
+    public TextView incomingMessages;
 
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
@@ -172,42 +164,49 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         }
     };
 
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy: called.");
-        super.onDestroy();
-        getActivity().unregisterReceiver(mBroadcastReceiver1);
-        getActivity().unregisterReceiver(mBroadcastReceiver2);
-        getActivity().unregisterReceiver(mBroadcastReceiver3);
-        getActivity().unregisterReceiver(mBroadcastReceiver4);
-        //mBluetoothAdapter.cancelDiscovery();
-    }
+    public BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String text = intent.getStringExtra("theMessage");
+
+            messages.append(text);
+            wholeResponse.append(text);
+
+            incomingMessages.setText(messages);
+            if (text.contains(">")){
+                Log.d(TAG,"this " + wholeResponse + " is the whole reply");
+                wholeResponse = new StringBuilder();
+            }
+
+
+            Log.d(TAG,"Data written on field");
+        }
+    };
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.d(TAG, "onCreateView: called.");
         View view =  inflater.inflate(R.layout.fragment_start_con, container, false);
 
-
-
         backBtn = (Button) view.findViewById(R.id.backButton);
-
-        Button btnONOFF = (Button) view.findViewById(R.id.btnONOFF);
+        btnONOFF = (Button) view.findViewById(R.id.btnONOFF);
+        btnSend = (Button) view.findViewById(R.id.btnSend);
         btnEnableDisable_Discoverable = (Button) view.findViewById(R.id.btnDiscoverable_on_off);
-        lvNewDevices = (ListView) view.findViewById(R.id.lvNewDevices);
-        mBTDevices = new ArrayList<>();
         btnDiscoverDev = (Button) view.findViewById(R.id.btnFindUnpairedDevices);
         btnStartConnection = (Button) view.findViewById(R.id.btnStartConnection);
-        btnSend = (Button) view.findViewById(R.id.btnSend);
-        etSend = (EditText) view.findViewById(R.id.editText);
 
+        lvNewDevices = (ListView) view.findViewById(R.id.lvNewDevices);
+        mBTDevices = new ArrayList<>();
+        etSend = (EditText) view.findViewById(R.id.editText);
         incomingMessages = (TextView) view.findViewById(R.id.incomingMessage);
         messages = new StringBuilder();
         wholeResponse = new StringBuilder();
 
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mReceiver, new IntentFilter("incomingMessage"));
+        //setup inputStream listener
+        //LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mReceiver, new IntentFilter("incomingMessage"));
 
         //Broadcasts when bond state changes (ie:pairing)
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
@@ -283,13 +282,11 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 String modMessage = etSend.getText().toString();
                 modMessage = modMessage + "\r";
                 byte[] bytes = modMessage.getBytes();
-                //mBluetoothConnection.write(bytes);
-                ((MainActivity)getActivity()).writeToStream(bytes);
-
+                //((MainActivity)getActivity()).writeToStream(bytes);
+                ((MainActivity)getActivity()).getValueOfCommand(bytes);
                 etSend.setText("");
             }
         });
-
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,8 +295,8 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 ((MainActivity)getActivity()).setViewPager(0);
             }
         });
-        return view;
 
+        return view;
     }
 
     @Override
@@ -308,43 +305,23 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
 
     }
 
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String text = intent.getStringExtra("theMessage");
-
-            messages.append(text);
-            wholeResponse.append(text);
-
-            incomingMessages.setText(messages);
-            if (text.contains(">")){
-                Log.d(TAG,"this " + wholeResponse + " is the whole reply");
-                wholeResponse = new StringBuilder();
-            }
-
-
-            Log.d(TAG,"Data written on field");
-        }
-    };
-
-    //create method for starting connection
-//***remember the conncction will fail and app will crash if you haven't paired first
-    public void startConnection(){
-        //startBTConnection(mBTDevice,MY_UUID_INSECURE);
-        ((MainActivity)getActivity()).startBluetoothConnection(mBTDevice, MY_UUID_INSECURE);
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy: called.");
+        super.onDestroy();
+        getActivity().unregisterReceiver(mBroadcastReceiver1);
+        getActivity().unregisterReceiver(mBroadcastReceiver2);
+        getActivity().unregisterReceiver(mBroadcastReceiver3);
+        getActivity().unregisterReceiver(mBroadcastReceiver4);
+        //mBluetoothAdapter.cancelDiscovery();
     }
 
-    /**
-     * starting chat service method
-
-    public void startBTConnection(BluetoothDevice device, UUID uuid){
-        Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
-
-        mBluetoothConnection.startClient(device,uuid);
-    } */
-
-
+    //create method for starting connection
+    //***remember the conncction will fail and app will crash if you haven't paired first
+    public void startConnection(){
+        //start connection service
+        ((MainActivity)getActivity()).startBluetoothConnection(mBTDevice, MY_UUID_INSECURE);
+    }
 
     public void enableDisableBT(){
         if(mBluetoothAdapter == null){
@@ -407,9 +384,8 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             Log.d(TAG, "Trying to pair with " + deviceName);
             mBTDevices.get(i).createBond();
-
+            //get paired device to be given later do bluetoothConnectionService instance
             mBTDevice = mBTDevices.get(i);
-            //mBluetoothConnection = new BluetoothConnectionService(getActivity());
             ((MainActivity)getActivity()).setBluetoothConnectionService();
         }
     }
