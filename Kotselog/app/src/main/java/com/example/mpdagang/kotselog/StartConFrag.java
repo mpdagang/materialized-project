@@ -2,20 +2,17 @@ package com.example.mpdagang.kotselog;
 
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,7 +54,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
 
     public DeviceListAdapter mDeviceListAdapter;
-    //GraphListAdapter
 
     public ListView lvNewDevices;
 
@@ -287,7 +283,8 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 String modMessage = etSend.getText().toString();
                 modMessage = modMessage + "\r";
                 byte[] bytes = modMessage.getBytes();
-                mBluetoothConnection.write(bytes);
+                //mBluetoothConnection.write(bytes);
+                ((MainActivity)getActivity()).writeToStream(bytes);
 
                 etSend.setText("");
             }
@@ -334,17 +331,18 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
     //create method for starting connection
 //***remember the conncction will fail and app will crash if you haven't paired first
     public void startConnection(){
-        startBTConnection(mBTDevice,MY_UUID_INSECURE);
+        //startBTConnection(mBTDevice,MY_UUID_INSECURE);
+        ((MainActivity)getActivity()).startBluetoothConnection(mBTDevice, MY_UUID_INSECURE);
     }
 
     /**
      * starting chat service method
-     */
+
     public void startBTConnection(BluetoothDevice device, UUID uuid){
         Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
 
         mBluetoothConnection.startClient(device,uuid);
-    }
+    } */
 
 
 
@@ -371,44 +369,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
     }
 
 
-    public void btnEnableDisable_Discoverable(View view) {
-        Log.d(TAG, "btnEnableDisable_Discoverable: Making device discoverable for 300 seconds.");
-
-        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivity(discoverableIntent);
-
-        IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-        getActivity().registerReceiver(mBroadcastReceiver2,intentFilter);
-
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    public void btnDiscover(View view) {
-        Log.d(TAG, "btnDiscover: Looking for unpaired devices.");
-
-        if(mBluetoothAdapter.isDiscovering()){
-            mBluetoothAdapter.cancelDiscovery();
-            Log.d(TAG, "btnDiscover: Canceling discovery.");
-
-            //check BT permissions in manifest
-            checkBTPermissions();
-
-            mBluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            getActivity().registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
-        }
-        if(!mBluetoothAdapter.isDiscovering()){
-
-            //check BT permissions in manifest
-            checkBTPermissions();
-
-            mBluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            getActivity().registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
-        }
-    }
-
     /**
      * This method is required for all devices running API23+
      * Android must programmatically check the permissions for bluetooth. Putting the proper permissions
@@ -433,7 +393,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         //first cancel discovery because its very memory intensive.
-        FragmentActivity activity = getActivity();
         mBluetoothAdapter.cancelDiscovery();
 
         Log.d(TAG, "onItemClick: You Clicked on a device.");
@@ -450,7 +409,8 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
             mBTDevices.get(i).createBond();
 
             mBTDevice = mBTDevices.get(i);
-            mBluetoothConnection = new BluetoothConnectionService(activity);
+            //mBluetoothConnection = new BluetoothConnectionService(getActivity());
+            ((MainActivity)getActivity()).setBluetoothConnectionService();
         }
     }
 }

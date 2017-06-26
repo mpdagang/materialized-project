@@ -1,12 +1,15 @@
 package com.example.mpdagang.kotselog;
 
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -20,7 +23,7 @@ import java.util.UUID;
  * Created by User on 12/21/2016.
  */
 
-public class BluetoothConnectionService {
+public class BluetoothConnectionService extends Service{
     private static final String TAG = "BluetoothConnectionServ";
     private static final String appName = "MYAPP";
     private static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -41,6 +44,12 @@ public class BluetoothConnectionService {
         mContext = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         start();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
 
@@ -308,6 +317,9 @@ public class BluetoothConnectionService {
         Log.d(TAG, "write: Write Called.");
         //perform the write
         mConnectedThread.write(out);
+    }
+    public void pauseConnection(){
+        mConnectedThread.cancel();
     }
 
 }
