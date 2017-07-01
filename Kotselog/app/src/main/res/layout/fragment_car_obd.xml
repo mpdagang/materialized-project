@@ -1,29 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:ap="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.mpdagang.kotselog.LogBook.PlotTest">
+    tools:context="com.example.mpdagang.kotselog.CarOBDFrag">
+    <LinearLayout
+        android:layout_height="10dp"
+        android:layout_width="match_parent"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
 
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical" >
+    <!-- TODO: Update blank fragment layout -->
     <com.androidplot.xy.XYPlot
         style="@style/APDefacto.Dark"
-        android:id="@+id/dynamicXYPlot"
+        android:id="@+id/dynamic1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         androidplot.renderMode="use_background_thread"
+        ap:title="A Dynamic XY Plot"
+        ap:domainTitle="Domain"
+        ap:rangeTitle="Range"
         ap:legendTextSize="15sp"
         ap:legendIconHeight="15dp"
         ap:legendIconWidth="15dp"
-        />
+        ap:legendHeight="25dp"
+        ap:legendAnchor="right_bottom"/>
 
     <com.androidplot.xy.XYPlot
         style="@style/APDefacto.Dark"
-        android:id="@+id/dynamicXYPlot2"
+        android:id="@+id/dynamic2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -39,7 +55,22 @@
 
     <com.androidplot.xy.XYPlot
         style="@style/APDefacto.Dark"
-        android:id="@+id/dynamicXYPlot3"
+        android:id="@+id/dynamic3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        androidplot.renderMode="use_background_thread"
+        ap:domainTitle="Domain"
+        ap:rangeTitle="Range"
+        ap:legendTextSize="15sp"
+        ap:legendIconHeight="15dp"
+        ap:legendIconWidth="15dp"
+        ap:legendHeight="25dp"
+        ap:legendAnchor="right_bottom"/>
+
+    <com.androidplot.xy.XYPlot
+        style="@style/APDefacto.Dark"
+        android:id="@+id/dynamic4"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -52,5 +83,9 @@
         ap:legendIconWidth="15dp"
         ap:legendHeight="25dp"
         ap:legendAnchor="right_bottom"/>
+
+</LinearLayout>
+
+
 
 </LinearLayout>

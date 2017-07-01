@@ -309,10 +309,14 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
     public void onDestroy() {
         Log.d(TAG, "onDestroy: called.");
         super.onDestroy();
-        getActivity().unregisterReceiver(mBroadcastReceiver1);
-        getActivity().unregisterReceiver(mBroadcastReceiver2);
-        getActivity().unregisterReceiver(mBroadcastReceiver3);
-        getActivity().unregisterReceiver(mBroadcastReceiver4);
+        try {
+            getActivity().unregisterReceiver(mBroadcastReceiver1);
+            getActivity().unregisterReceiver(mBroadcastReceiver2);
+            getActivity().unregisterReceiver(mBroadcastReceiver3);
+            getActivity().unregisterReceiver(mBroadcastReceiver4);
+        }catch(Exception e){
+            Log.d(TAG, "Unable to unregister predefined Receivers");
+        }
         //mBluetoothAdapter.cancelDiscovery();
     }
 

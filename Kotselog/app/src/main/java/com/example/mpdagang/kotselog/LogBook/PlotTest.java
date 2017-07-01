@@ -79,6 +79,10 @@ public class PlotTest extends AppCompatActivity {
 
         // add a new series' to the xyplot:
         //plot.addSeries(series1, series1Format);
+        plot.getLegend().setVisible(false);
+        plot.setBackgroundPaint(null);
+        plot.getGraph().setBackgroundPaint(null);
+        plot.getGraph().setGridBackgroundPaint(null);
         plot.addSeries(series2, series2Format);
         /*
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {

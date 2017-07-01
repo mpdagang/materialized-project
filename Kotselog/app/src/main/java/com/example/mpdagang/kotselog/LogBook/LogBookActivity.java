@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -21,11 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LogBookActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
-
+    private static final String TAG = "LogBookActivity";
     private Button genExcel;
     private TextView test;
     private LineGraphSeries<DataPoint> series1;
     public GraphView graph;
+    public GraphView graph2;
+    public GraphView graph3;
+    public GraphView graph4;
 
     private ArrayList<XYValue> xyValueArray;
     private Handler tHandler;
@@ -40,7 +44,7 @@ public class LogBookActivity extends AppCompatActivity implements AdapterView.On
 
         test = (TextView) findViewById(R.id.testText);
 
-        graph = (GraphView) findViewById(R.id.lineGraph);
+        graph = (GraphView) findViewById(R.id.lineGraph1);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(-2);
         graph.getViewport().setMaxY(2);
@@ -48,19 +52,72 @@ public class LogBookActivity extends AppCompatActivity implements AdapterView.On
 
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(10);
-        graph.getGridLabelRenderer().setNumHorizontalLabels(15);
+        graph.getViewport().setMaxX(20);
+        graph.getGridLabelRenderer().setNumHorizontalLabels(20);
         graph.getGridLabelRenderer().setVerticalLabelsVisible(false);
-        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL );
+        graph.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.NONE );
+        graph.setBackgroundColor(Color.BLACK);
 
-
-        //graph.getViewport().setOnXAxisBoundsChangedListener();
-        // graph.getViewport().computeScroll();
         graph.getViewport().setScalable(true);
+
+        graph2 = (GraphView) findViewById(R.id.lineGraph2);
+        graph2.getViewport().setYAxisBoundsManual(true);
+        graph2.getViewport().setMinY(-2);
+        graph2.getViewport().setMaxY(2);
+
+
+        graph2.getViewport().setXAxisBoundsManual(true);
+        graph2.getViewport().setMinX(0);
+        graph2.getViewport().setMaxX(20);
+        graph2.getGridLabelRenderer().setNumHorizontalLabels(20);
+        graph2.getGridLabelRenderer().setVerticalLabelsVisible(false);
+        graph2.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+        graph2.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.NONE );
+        graph2.setBackgroundColor(Color.BLACK);
+
+        graph2.getViewport().setScalable(true);
+
+        graph3 = (GraphView) findViewById(R.id.lineGraph3);
+        graph3.getViewport().setYAxisBoundsManual(true);
+        graph3.getViewport().setMinY(-2);
+        graph3.getViewport().setMaxY(2);
+
+
+        graph3.getViewport().setXAxisBoundsManual(true);
+        graph3.getViewport().setMinX(0);
+        graph3.getViewport().setMaxX(20);
+        graph3.getGridLabelRenderer().setNumHorizontalLabels(20);
+        graph3.getGridLabelRenderer().setVerticalLabelsVisible(false);
+        graph3.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+        graph3.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.NONE );
+        graph3.setBackgroundColor(Color.BLACK);
+
+        graph3.getViewport().setScalable(true);
+
+        graph4 = (GraphView) findViewById(R.id.lineGraph4);
+        graph4.getViewport().setYAxisBoundsManual(true);
+        graph4.getViewport().setMinY(-2);
+        graph4.getViewport().setMaxY(2);
+
+
+        graph4.getViewport().setXAxisBoundsManual(true);
+        graph4.getViewport().setMinX(0);
+        graph4.getViewport().setMaxX(20);
+        graph4.getGridLabelRenderer().setNumHorizontalLabels(20);
+        graph4.getGridLabelRenderer().setVerticalLabelsVisible(false);
+        graph4.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+        graph4.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.NONE );
+        graph4.setBackgroundColor(Color.BLACK);
+
+        graph4.getViewport().setScalable(true);
+
+
+
 
         series1 = new LineGraphSeries<DataPoint>();
         series1.setColor(Color.GREEN);
-        series1.setThickness(1);
+        series1.setThickness(5);
 
         xyValueArray = new ArrayList<>();
         tHandler = new Handler();
@@ -80,54 +137,58 @@ public class LogBookActivity extends AppCompatActivity implements AdapterView.On
         new Thread(drawer).start();
     }
      private void drawGraph(){
-         int numDataPoints = 500;
+         final int numDataPoints = 200;
          x = 0;
          z = 0;
-        while(true){
-            try {
-                x = x + 0.1;
-                y = Math.sin(x);
-               // xyValueArray.add(new XYValue(x,y));
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            tHandler.post(new Runnable() {
-               // double plotX;
-               // double plotY;
-                @Override
-                public void run() {
-                    graph = (GraphView) findViewById(R.id.lineGraph);
-                    if(z == 500) {
-                        series1 = new LineGraphSeries<DataPoint>();
-                        series1.setColor(Color.GREEN);
-                        //series1.setDrawDataPoints(true);
-                        //series1.setDrawAsPath(true);
-                        series1.setThickness(1);
-                        z = 0;
-                    }else{
+         try {
+             while (true) {
+                 try {
+                     x = x + 0.1;
+                     y = Math.sin(x);
+                     Thread.sleep(50);
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+                 tHandler.post(new Runnable() {
+                     @Override
+                     public void run() {
+                         graph = (GraphView) findViewById(R.id.lineGraph1);
+                         graph2 = (GraphView) findViewById(R.id.lineGraph2);
+                         graph3 = (GraphView) findViewById(R.id.lineGraph3);
+                         graph4 = (GraphView) findViewById(R.id.lineGraph4);
+                         if (z == numDataPoints) {
+                             series1 = new LineGraphSeries<>();
+                             series1.setColor(Color.GREEN);
+                             series1.setThickness(5);
 
-                        z++;
-                    }
-                    series1.appendData(new DataPoint(x,y), true, 500);
-                    //series1 = (LineGraphSeries<DataPoint>) list.get(0);
+                             z = 0;
+                         } else {
 
-
-                   // for(int i = 0; i <xyValueArray.size(); i++){
-                   //    plotX = xyValueArray.get(i).getX();
-                     //  plotY = xyValueArray.get(i).getY();
-
-                   // }
+                             z++;
+                         }
+                         series1.appendData(new DataPoint(x, y), true, numDataPoints);
 
 
-                    graph.removeAllSeries();
-                    graph.addSeries(series1);
 
-                }
-            });
+                         graph.removeAllSeries();
+                         graph.addSeries(series1);
 
-            //if(x)
-        }
+                         graph2.removeAllSeries();
+                         graph2.addSeries(series1);
+
+                         graph3.removeAllSeries();
+                         graph3.addSeries(series1);
+
+                         graph4.removeAllSeries();
+                         graph4.addSeries(series1);
+
+                     }
+                 });
+
+             }
+         }catch(Exception e){
+             Log.d(TAG,"Loop interrupted");
+         }
 
 
      }

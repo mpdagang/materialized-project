@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager){
         mSectionsStatePagerAdapter.addFragment(new NavFrag(), "Navigation");
         mSectionsStatePagerAdapter.addFragment(new StartConFrag(), "Start Connection");
+        mSectionsStatePagerAdapter.addFragment(new CarInfoFrag(), "Show Car Details");
+        mSectionsStatePagerAdapter.addFragment(new CarOBDFrag(), "Start Data Log");
         viewPager.setAdapter(mSectionsStatePagerAdapter);
     }
 
