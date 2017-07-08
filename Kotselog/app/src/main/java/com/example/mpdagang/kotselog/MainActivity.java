@@ -1,18 +1,17 @@
 package com.example.mpdagang.kotselog;
 
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
+import com.example.mpdagang.kotselog.Fragments.CarInfoFrag;
+import com.example.mpdagang.kotselog.Fragments.CarOBDFrag;
+import com.example.mpdagang.kotselog.Fragments.NavFrag;
+import com.example.mpdagang.kotselog.Fragments.StartConFrag;
+
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
     public BluetoothConnectionService mBlueConServ;
     public StringBuilder mainResponse;
     public String curResponse;
-
+    public ArrayList<String> pidList;
+    /*
     public BroadcastReceiver mainReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             mainResponse.append(text);
             curResponse = text;
         }
-    };
+    };*/
 
     //-------------------------------Functions-------------------------------
     @Override
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Started");
 
         mSectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
-        LocalBroadcastManager.getInstance(this).registerReceiver(mainReceiver, new IntentFilter("incomingMessage"));
+        //LocalBroadcastManager.getInstance(this).registerReceiver(mainReceiver, new IntentFilter("incomingMessage"));
         mainResponse = new StringBuilder();
         curResponse = new String();
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -74,12 +74,12 @@ public class MainActivity extends AppCompatActivity {
         mBlueConServ.write(bytes);
 
     }
-
-    public String getValueOfCommand(byte[] bytes){
+    /*
+    public StringBuilder getValueOfCommand(byte[] bytes){
         mainResponse = new StringBuilder();
         curResponse = new String();
         mBlueConServ.write(bytes);
-
+        int j = 0;
         Runnable waiter = new Runnable() {
             int i = 0;
             @Override
@@ -90,10 +90,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "whole response built" + mainResponse);
             }
         };
-        new Thread(waiter).start();
+        Thread waitThread = new Thread(waiter);
+        waitThread.start();
 
+        //return mainResponse.toString().replaceAll("\n", " ");
+        while(waitThread.isAlive()){
+           j = j+2;
+        }
         Toast.makeText(this, "Response is " + mainResponse + "message", Toast.LENGTH_SHORT).show();
-        return mainResponse.toString().replaceAll("\n", " ");
-    }
+        Log.d(TAG, "getValueOfCommand: Sending response back to requester");
+        return mainResponse;
+    }*/
     //-------------------------------Classes-------------------------------
 }

@@ -58,6 +58,7 @@ public class BluetoothConnectionService extends Service{
      * like a server-side client. It runs until a connection is accepted
      * (or until cancelled).
      */
+    //-------------------------- Internal Classes --------------------------
     private class AcceptThread extends Thread {
         
         // The local server socket
@@ -180,43 +181,6 @@ public class BluetoothConnectionService extends Service{
         }
     }
 
-
-
-    /**
-     * Start the chat service. Specifically start AcceptThread to begin a
-     * session in listening (server) mode. Called by the Activity onResume()
-     */
-    public synchronized void start() {
-        Log.d(TAG, "start");
-
-        // Cancel any thread attempting to make a connection
-        if (mConnectThread != null) {
-            mConnectThread.cancel();
-            mConnectThread = null;
-        }
-        if (mInsecureAcceptThread == null) {
-            mInsecureAcceptThread = new AcceptThread();
-            mInsecureAcceptThread.start();
-        }
-    }
-
-    /**
-
-     AcceptThread starts and sits waiting for a connection.
-     Then ConnectThread starts and attempts to make a connection with the other devices AcceptThread.
-     **/
-
-    public void startClient(BluetoothDevice device, UUID uuid){
-        Log.d(TAG, "startClient: Started.");
-
-        //initprogress dialog
-        mProgressDialog = ProgressDialog.show(mContext,"Connecting Bluetooth"
-                ,"Please Wait...",true);
-
-        mConnectThread = new ConnectThread(device, uuid);
-        mConnectThread.start();
-    }
-
     /**
      Finally the ConnectedThread which is responsible for maintaining the BTConnection, Sending the data, and
      receiving incoming data through input/output streams respectively.
@@ -287,6 +251,33 @@ public class BluetoothConnectionService extends Service{
             }
         }
 
+        public void setAdapter(){
+            Runnable set = new Runnable() {
+                @Override
+                public void run() {
+                    String c1 = "atz";
+                    String c2 = "atl0";
+                    String c3 = "ate0";
+                    String c4 = "ats1";
+                    String c5 = "atsp0";
+
+                    c1 = c1 + "\r";
+                    c2 = c2 + "\r";
+                    c3 = c3 + "\r";
+                    c4 = c4 + "\r";
+                    c5 = c5 + "\r";
+
+                    write(c1.getBytes());
+                    write(c2.getBytes());
+                    write(c3.getBytes());
+                    write(c4.getBytes());
+                    write(c5.getBytes());
+                }
+            };
+
+            new Thread(set).start();
+        }
+
         /* Call this from the main activity to shutdown the connection */
         public void cancel() {
             try {
@@ -295,12 +286,52 @@ public class BluetoothConnectionService extends Service{
         }
     }
 
+    // ---------------- Class Functions -----------------
+
+
+    /**
+     * Start the chat service. Specifically start AcceptThread to begin a
+     * session in listening (server) mode. Called by the Activity onResume()
+     */
+    public synchronized void start() {
+        Log.d(TAG, "start");
+
+        // Cancel any thread attempting to make a connection
+        if (mConnectThread != null) {
+            mConnectThread.cancel();
+            mConnectThread = null;
+        }
+        if (mInsecureAcceptThread == null) {
+            mInsecureAcceptThread = new AcceptThread();
+            mInsecureAcceptThread.start();
+        }
+    }
+
+    /**
+
+     AcceptThread starts and sits waiting for a connection.
+     Then ConnectThread starts and attempts to make a connection with the other devices AcceptThread.
+     **/
+
+    public void startClient(BluetoothDevice device, UUID uuid){
+        Log.d(TAG, "startClient: Started.");
+
+        //initprogress dialog
+        mProgressDialog = ProgressDialog.show(mContext,"Connecting Bluetooth"
+                ,"Please Wait...",true);
+
+        mConnectThread = new ConnectThread(device, uuid);
+        mConnectThread.start();
+    }
+
+
     private void connected(BluetoothSocket mmSocket, BluetoothDevice mmDevice) {
         Log.d(TAG, "connected: Starting.");
 
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(mmSocket);
         mConnectedThread.start();
+
     }
 
     /**

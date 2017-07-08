@@ -7,16 +7,83 @@
     android:orientation="vertical"
     tools:context="com.example.mpdagang.kotselog.Animation.AnimationActivity002">
 
-    <Button
-        android:id="@+id/button3"
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        >
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start Data Log" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop Data Log" />
 
-    <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
-        android:id="@+id/animatePane"
-        android:layout_height="match_parent"
+    </LinearLayout>
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_margin="40dp"
-        />
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+                    android:id="@+id/animatePane"
+                    android:layout_height="200dp"
+                    android:layout_width="match_parent"
+                    />
+
+                <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+                    android:id="@+id/animatePane2"
+                    android:layout_height="200dp"
+                    android:layout_width="match_parent"
+                    />
+
+                <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+                    android:id="@+id/animatePane3"
+                    android:layout_height="200dp"
+                    android:layout_width="match_parent"
+                    />
+
+                <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+                    android:id="@+id/animatePane4"
+                    android:layout_height="200dp"
+                    android:layout_width="match_parent"
+                    />
+
+                <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+                    android:id="@+id/animatePane5"
+                    android:layout_height="200dp"
+                    android:layout_width="match_parent"
+                    />
+
+                <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+                    android:id="@+id/animatePane6"
+                    android:layout_height="200dp"
+                    android:layout_width="match_parent"
+                    />
+                <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+                    android:id="@+id/animatePane7"
+                    android:layout_height="200dp"
+                    android:layout_width="match_parent"
+                    />
+                <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+                    android:id="@+id/animatePane8"
+                    android:layout_height="200dp"
+                    android:layout_width="match_parent"
+                    />
+
+            </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

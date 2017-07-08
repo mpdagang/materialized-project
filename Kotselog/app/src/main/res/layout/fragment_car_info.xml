@@ -1,13 +1,79 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mpdagang.kotselog.CarInfoFrag">
+    tools:context="com.example.mpdagang.kotselog.Fragments.CarInfoFrag">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/carVinLable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/car_vin" />
+
+    <TextView
+        android:id="@+id/carObdProtLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/carVinLable"
+        android:layout_alignStart="@+id/carVinLable"
+        android:layout_below="@+id/carVinLable"
+        android:layout_marginTop="20dp"
+        android:text="@string/car_obd_protocol" />
+
+    <TextView
+        android:id="@+id/carFuelLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/carObdProtLabel"
+        android:layout_alignStart="@+id/carObdProtLabel"
+        android:layout_below="@+id/carObdProtLabel"
+        android:layout_marginTop="20dp"
+        android:text="@string/car_fuel_type" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/carVinLable"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/textView4"
+        android:layout_alignRight="@+id/textView4"
+        android:layout_alignTop="@+id/carObdProtLabel"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView5"
+        android:layout_alignStart="@+id/textView5"
+        android:layout_alignTop="@+id/carFuelLabel"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/returnToNav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/carFuelLabel"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/carFuelLabel"
+        android:layout_marginBottom="20dp"
+        android:text="Ok" />
+</RelativeLayout>

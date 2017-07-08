@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/pidName"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="14dp"
+        android:text="Text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="10dp"/>
+
+    <com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout
+        android:id="@+id/pidGraph"
+        android:layout_height="300dp"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:layout_alignTop="@+id/pidName"
+        android:layout_toRightOf="@+id/pidName"
+        android:layout_toEndOf="@+id/pidName" />
+</RelativeLayout>

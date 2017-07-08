@@ -4,88 +4,114 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:ap="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.mpdagang.kotselog.CarOBDFrag">
-    <LinearLayout
-        android:layout_height="10dp"
-        android:layout_width="match_parent"
-        android:orientation="vertical" >
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
+    tools:context="com.example.mpdagang.kotselog.Fragments.CarOBDFrag">
 
-    </LinearLayout>
-    <LinearLayout
+
+
+
+        <LinearLayout
+            android:layout_weight="0"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:id="@+id/sectionA">
+                <Button
+                    android:id="@+id/startLogBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Start Log" />
+
+                <Button
+                    android:id="@+id/stopLogBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Stop Log" />
+                <Button
+                    android:id="@+id/testButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Test" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:id="@+id/sectionB"
+            android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                        <TextView
+                            android:id="@+id/graph1Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:text="Graph 1" />
+
+                        <Spinner
+                            android:id="@+id/graph1Var1"
+                            android:layout_width="100dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="30dp" />
+
+                        <Spinner
+                            android:id="@+id/graph1Var2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@+id/graph1Var1"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignRight="@+id/graph1Var1"
+                            android:layout_centerVertical="true" />
+
+                        <Spinner
+                            android:id="@+id/graph1Var3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@+id/graph1Var2"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignRight="@+id/graph1Var2"
+                            android:layout_below="@+id/graph1Var2"
+                            android:layout_marginTop="12dp" />
+
+
+                </RelativeLayout>
+
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:id="@+id/testList"
+                            android:orientation="vertical">
+
+                        </LinearLayout>
+                </ScrollView>
+        </LinearLayout>
+
+
+
+    <!--
+    <ListView
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:orientation="vertical" >
-    <!-- TODO: Update blank fragment layout -->
-    <com.androidplot.xy.XYPlot
-        style="@style/APDefacto.Dark"
-        android:id="@+id/dynamic1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        androidplot.renderMode="use_background_thread"
-        ap:title="A Dynamic XY Plot"
-        ap:domainTitle="Domain"
-        ap:rangeTitle="Range"
-        ap:legendTextSize="15sp"
-        ap:legendIconHeight="15dp"
-        ap:legendIconWidth="15dp"
-        ap:legendHeight="25dp"
-        ap:legendAnchor="right_bottom"/>
-
-    <com.androidplot.xy.XYPlot
-        style="@style/APDefacto.Dark"
-        android:id="@+id/dynamic2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        androidplot.renderMode="use_background_thread"
-        ap:title="A Dynamic XY Plot"
-        ap:domainTitle="Domain"
-        ap:rangeTitle="Range"
-        ap:legendTextSize="15sp"
-        ap:legendIconHeight="15dp"
-        ap:legendIconWidth="15dp"
-        ap:legendHeight="25dp"
-        ap:legendAnchor="right_bottom"/>
-
-    <com.androidplot.xy.XYPlot
-        style="@style/APDefacto.Dark"
-        android:id="@+id/dynamic3"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        androidplot.renderMode="use_background_thread"
-        ap:domainTitle="Domain"
-        ap:rangeTitle="Range"
-        ap:legendTextSize="15sp"
-        ap:legendIconHeight="15dp"
-        ap:legendIconWidth="15dp"
-        ap:legendHeight="25dp"
-        ap:legendAnchor="right_bottom"/>
-
-    <com.androidplot.xy.XYPlot
-        style="@style/APDefacto.Dark"
-        android:id="@+id/dynamic4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        androidplot.renderMode="use_background_thread"
-        ap:title="A Dynamic XY Plot"
-        ap:domainTitle="Domain"
-        ap:rangeTitle="Range"
-        ap:legendTextSize="15sp"
-        ap:legendIconHeight="15dp"
-        ap:legendIconWidth="15dp"
-        ap:legendHeight="25dp"
-        ap:legendAnchor="right_bottom"/>
-
-</LinearLayout>
-
-
-
+        android:id="@+id/graphHolder"/> -->
 </LinearLayout>

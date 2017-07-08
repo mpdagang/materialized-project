@@ -6,7 +6,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context="com.example.mpdagang.kotselog.StartConFrag">
+    tools:context="com.example.mpdagang.kotselog.Fragments.StartConFrag">
 
     <Button
         android:text="ON/OFF"

@@ -18,6 +18,12 @@
     <string name="adapter_info">Adapter Information</string>
     <string name="back_button">Back</string>
 
-    <!-- String for Log book -->
+    <!-- String for Logbook -->
     <string name="gen_excel">Generate Excel</string>
+
+    <!-- String for CarInfoFrag -->
+    <string name="car_vin">VIN:</string>
+    <string name="car_obd_protocol">OBD-II Standard Protocol:</string>
+    <string name="car_fuel_type">Fuel Type:</string>
+
 </resources>
