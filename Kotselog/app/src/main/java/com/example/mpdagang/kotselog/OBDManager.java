@@ -3,7 +3,6 @@ package com.example.mpdagang.kotselog;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by MPDagang on 05/07/2017.
@@ -11,8 +10,42 @@ import java.util.Arrays;
 
 public class OBDManager {
     private static final String TAG = "OBDManager";
+    /*
+    private static final ArrayList<PidElement> pidMasterList = new ArrayList<PidElement>() {{
+        add(new PidElement("0101", "1", "1", "1", 1, 1));
+        add(new PidElement("0102", "1", "1", "1", 1, 1));
+        add(new PidElement("0103", "1", "1", "1", 1, 1));
+        add(new PidElement("0104", "1", "1", "1", 1, 1));
+        add(new PidElement("0105", "1", "1", "1", 1, 1));
+        add(new PidElement("0106", "1", "1", "1", 1, 1));
+        add(new PidElement("0107", "1", "1", "1", 1, 1));
+        add(new PidElement("0108", "1", "1", "1", 1, 1));
+        add(new PidElement("0109", "1", "1", "1", 1, 1));
+        add(new PidElement("010A", "1", "1", "1", 1, 1));
+        add(new PidElement("010B", "1", "1", "1", 1, 1));
+        add(new PidElement("010C", "1", "1", "1", 1, 1));
+        add(new PidElement("010D", "1", "1", "1", 1, 1));
+        add(new PidElement("010E", "1", "1", "1", 1, 1));
+        add(new PidElement("010F", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("1", "1", "1", "1", 1, 1));
+    }}; */
     public String test = "A3 00 BE 3E B0 00";
-    public String test2 = "A3 0C 0E 96";
     public ArrayList<String> pidListA;
     private static String[] staticLookup = new String[] {
             "0000",
@@ -32,7 +65,6 @@ public class OBDManager {
             "1110",
             "1111"
     };
-
 
     public OBDManager(){
         pidListA = new ArrayList<>();
@@ -75,18 +107,13 @@ public class OBDManager {
         String step1 = test.replaceAll("\\s+", "");
         String step2 = step1.substring(4);
         String[] step3 = step2.split("");
-        //String[] dummy = test.split("\\s+");
-
         ArrayList<String> step4 = new ArrayList<>();
 
         for(int i = 1; i < step3.length; i++){
-            //int j = Integer.parseInt(step3[i], 16);
-            //String bin = Integer.toBinaryString(j);
             String bin = staticLookup[Integer.parseInt(step3[i], 16)];
             step4.add(bin);
             Log.d(TAG, "--------------------value is:" + bin + ". ");
         }
-
 
         String step5 = step4.toString();
         step5 = step5.replaceAll(",", "");
@@ -95,8 +122,6 @@ public class OBDManager {
         step5 = step5.replaceAll("\\]","");
         String[] step6 = step5.split("");
         step4.clear();
-
-
 
         for(int i = 0; i < pidListA.size(); i++ ){
             if(Integer.parseInt(step6[i+1]) == 1){
@@ -115,32 +140,26 @@ public class OBDManager {
 
     }
 
-    public static float calRPM(String response){
-        float rpm = 0;
-        String step1 = response.substring(6);
-        step1 = step1.replaceAll("\\>", "");
-        String[] step2 = step1.split("\\s+");
+    public float calRPM(String response){
+        //float rpm = 0;
+        //String step1 = response.substring(6).replaceAll(">", "");
+        String[] step2 = response.substring(6).replaceAll(">", "").split("\\s+");
         int A = Integer.parseInt(step2[0],16);
         int B = Integer.parseInt(step2[1],16);
-
-
-        rpm = ((256*A) + B)/4;
-
         //Log.d(TAG, "--------------------value is:" + step1 + ". ");
         //Log.d(TAG, "--------------------value is:" + A + ". ");
         //Log.d(TAG, "--------------------value is:" + B + ". ");
         //Log.d(TAG, "--------------------value is:" + rpm + ". ");
 
-        return rpm;
+        return (float) ((256*A) + B)/4;
     }
 
-    public static double calEngineCoolantTemp(double A){
-        return A;
+    public static float calEngineCoolantTemp(String response){
+        return 1;
     }
 
     public static double calIntakeManifoldPressure(double A){
         return A;
     }
-
 
 }

@@ -35,12 +35,9 @@ import java.util.Random;
 
 public class CarOBDFrag extends Fragment {
     private static final String TAG = "CarOBDFrag";
-    public ListView graphList;
     public GraphListAdapter mGraphListAdapter;
     public ArrayList<String> availablePids;
     public ArrayList<String> setGraph;
-    private Activity_Animation002_Layout currentGraph;
-
     public StringBuilder messages;
     public StringBuilder wholeResponse;
     public String text;
@@ -54,15 +51,11 @@ public class CarOBDFrag extends Fragment {
     private Spinner option3;
 
     private LinearLayout test;
-
     private TextView graphLabel1;
-
     private Thread stream;
     private Runnable streamer;
-
     public OBDManager o = new OBDManager();
     public boolean canSend = false;
-
     public byte[] bytes;
 
     public BroadcastReceiver cReceiver = new BroadcastReceiver() {
@@ -77,10 +70,8 @@ public class CarOBDFrag extends Fragment {
             //incomingMessages.setText(messages);
             if (text.contains(">")){
                 Log.d(TAG,"this " + wholeResponse.toString() + " is the whole reply");
-                //double x = (double) o.calRPM(wholeResponse.toString());
-                //graphLabel1.setText("value :" + x + ". ");
-                //View baby = test.getChildAt(0);
-                //Activity_Animation002_Layout anotherBaby = (Activity_Animation002_Layout) baby.findViewById(R.id.pidGraph);
+                double x = (double) o.calRPM(wholeResponse.toString());
+                graphLabel1.setText("value :" + x + ". ");
                 //anotherBaby.updateGraph(x);
                 wholeResponse = new StringBuilder();
             }
@@ -103,9 +94,6 @@ public class CarOBDFrag extends Fragment {
         Log.d(TAG, "CarOBDView created");
         View view = inflater.inflate(R.layout.fragment_car_obd, container, false);
 
-        messages = new StringBuilder();
-        wholeResponse = new StringBuilder();
-
         test = (LinearLayout) view.findViewById(R.id.testList);
         for(int i = 0; i < mGraphListAdapter.getCount(); i++) {
             test.addView(mGraphListAdapter.getView(i , null, test),i);
@@ -120,7 +108,7 @@ public class CarOBDFrag extends Fragment {
         graphLabel1 = (TextView) view.findViewById(R.id.graph1Label);
 
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, availablePids);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, availablePids);
         spinnerAdapter.add(" ");
 
 
@@ -167,22 +155,19 @@ public class CarOBDFrag extends Fragment {
                 Log.d(TAG,"testButton: starting stream");
                     streamer = new Runnable() {
 
-
                         @Override
                         public void run() {
                             canSend = true;
                             while(canSend){
-                                //send
-                               // Log.d(TAG,"testButton: sending message");
                                 String modMessage;
 
-                                modMessage = "0111";
-                                modMessage = modMessage + "\r";
+                                modMessage = "010C1" + "\r";
+                                //modMessage = modMessage + "\r";
                                 bytes = modMessage.getBytes();
                                 ((MainActivity)getActivity()).writeToStream(bytes);
 
                                 try {
-                                    Thread.sleep(2000);
+                                    Thread.sleep(200);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -190,9 +175,6 @@ public class CarOBDFrag extends Fragment {
                             }
                         }
                     };
-                    //
-                //}
-
                 stream = new Thread(streamer);
                 stream.start();
 
@@ -206,6 +188,8 @@ public class CarOBDFrag extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        messages = new StringBuilder();
+        wholeResponse = new StringBuilder();
         o = new OBDManager();
 
         availablePids  = o.decodeAvailable("test");

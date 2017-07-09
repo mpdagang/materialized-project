@@ -220,7 +220,7 @@ public class BluetoothConnectionService extends Service{
             byte[] buffer = new byte[1024];  // buffer store for the stream
 
             int bytes; // bytes returned from read()
-
+            this.setAdapter();
             // Keep listening to the InputStream until an exception occurs
             while (true) {
                 // Read from the InputStream
@@ -257,8 +257,8 @@ public class BluetoothConnectionService extends Service{
                 public void run() {
                     String c1 = "atz";
                     String c2 = "atl0";
-                    String c3 = "ate0";
-                    String c4 = "ats1";
+                    String c3 = "ats1";
+                    String c4 = "ate0";
                     String c5 = "atsp0";
 
                     c1 = c1 + "\r";
@@ -268,9 +268,29 @@ public class BluetoothConnectionService extends Service{
                     c5 = c5 + "\r";
 
                     write(c1.getBytes());
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     write(c2.getBytes());
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     write(c3.getBytes());
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     write(c4.getBytes());
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     write(c5.getBytes());
                 }
             };
