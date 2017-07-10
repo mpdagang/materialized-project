@@ -260,12 +260,14 @@ public class BluetoothConnectionService extends Service{
                     String c3 = "ats1";
                     String c4 = "ate0";
                     String c5 = "atsp0";
+                    String c6 = "01001";
 
                     c1 = c1 + "\r";
                     c2 = c2 + "\r";
                     c3 = c3 + "\r";
                     c4 = c4 + "\r";
                     c5 = c5 + "\r";
+                    c6 = c6 + "\r";
 
                     write(c1.getBytes());
                     try {
@@ -292,6 +294,12 @@ public class BluetoothConnectionService extends Service{
                         e.printStackTrace();
                     }
                     write(c5.getBytes());
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    write(c6.getBytes());
                 }
             };
 

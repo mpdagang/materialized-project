@@ -51,12 +51,15 @@ public class CarOBDFrag extends Fragment {
     private Spinner option3;
 
     private LinearLayout test;
+    private Activity_Animation002_Layout testGraph;
+
     private TextView graphLabel1;
     private Thread stream;
     private Runnable streamer;
     public OBDManager o = new OBDManager();
     public boolean canSend = false;
     public byte[] bytes;
+    public int flag = 1;
 
     public BroadcastReceiver cReceiver = new BroadcastReceiver() {
         @Override
@@ -70,9 +73,22 @@ public class CarOBDFrag extends Fragment {
             //incomingMessages.setText(messages);
             if (text.contains(">")){
                 Log.d(TAG,"this " + wholeResponse.toString() + " is the whole reply");
-                double x = (double) o.calRPM(wholeResponse.toString());
-                graphLabel1.setText("value :" + x + ". ");
-                //anotherBaby.updateGraph(x);
+                double x;
+                if(flag == 1) {
+                    x = (double) o.calRPM(wholeResponse.toString());
+                    graphLabel1.setText("value :" + x + ". ");
+                    testGraph.updateGraph(x);
+                    flag = 2;
+                }else if(flag == 2){
+                    x = (double) o.calEngineCoolantTemp(wholeResponse.toString());
+                    testGraph.updateGraph3(x);
+                    flag = 3;
+                }else{
+                    x = (double) o.calThrottlePos(wholeResponse.toString());
+                    testGraph.updateGraph2(x);
+                    flag = 1;
+                }
+
                 wholeResponse = new StringBuilder();
             }
 
@@ -153,18 +169,38 @@ public class CarOBDFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG,"testButton: starting stream");
+                    View baby = test.getChildAt(0);
+                    testGraph = (Activity_Animation002_Layout) baby.findViewById(R.id.pidGraph);
                     streamer = new Runnable() {
 
                         @Override
                         public void run() {
                             canSend = true;
+                            int toggle = 1;
                             while(canSend){
                                 String modMessage;
 
-                                modMessage = "010C1" + "\r";
-                                //modMessage = modMessage + "\r";
-                                bytes = modMessage.getBytes();
-                                ((MainActivity)getActivity()).writeToStream(bytes);
+                                if(toggle == 1) {
+                                    modMessage = "010C1" + "\r";
+                                    //modMessage = modMessage + "\r";
+                                    bytes = modMessage.getBytes();
+                                    ((MainActivity) getActivity()).writeToStream(bytes);
+                                    toggle = 2;
+                                }else if(toggle == 2){
+                                    modMessage = "010B1" + "\r";
+                                    //modMessage = modMessage + "\r";
+                                    bytes = modMessage.getBytes();
+                                    ((MainActivity) getActivity()).writeToStream(bytes);
+                                    toggle = 3;
+                                }else{
+                                    modMessage = "01111" + "\r";
+                                    //modMessage = modMessage + "\r";
+                                    bytes = modMessage.getBytes();
+                                    ((MainActivity) getActivity()).writeToStream(bytes);
+                                    toggle = 1;
+                                }
+
+
 
                                 try {
                                     Thread.sleep(200);

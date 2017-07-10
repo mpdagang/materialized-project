@@ -37,11 +37,14 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     public Paint red_paintbrush_stroke;
     public Paint blue_paintbrush_stroke;
     public Paint green_paintbrush_stroke;
+    public Paint white_paintbrush_stroke;
     public Paint transparent;
 
     public Path eraser;
     public Path graph;
     public ArrayList<XYValue> yValueHolder;
+    public ArrayList<XYValue> yValueHolder1;
+    public ArrayList<XYValue> yValueHolder2;
 
     Bitmap cherry;
     int cherry_x, cherry_y;
@@ -92,8 +95,10 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         eraser = new Path();
 
         yValueHolder = new ArrayList<>();
+        yValueHolder1 = new ArrayList<>();
+        yValueHolder2 = new ArrayList<>();
 
-        frames_per_second = 4;
+        frames_per_second = 10;
         frame_time_seconds = 1/frames_per_second;
         frame_time_ms = frame_time_seconds*1000;
         frame_time_ns = frame_time_ms*1000000;
@@ -141,8 +146,13 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
             canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(), transparent);
             drawGraph();
 
-            if(yValueHolder.size() > 130){
+            if(yValueHolder.size() > 260){
                 yValueHolder.remove(0);
+            }
+            if(yValueHolder1.size() > 260){
+                yValueHolder1.remove(0);
+            }if(yValueHolder2.size() > 260){
+                yValueHolder2.remove(0);
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
 
@@ -178,6 +188,30 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         this.canvas.drawText("val: " + yValueHolder.get(yValueHolder.size()-1).getY(), 3,30, green_paintbrush_stroke);
         this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()), 4, red_paintbrush_fill);
 
+        graph = new Path();
+
+        xVal = canvas.getWidth();
+        yVal = canvas.getHeight();
+        graph.moveTo(xVal-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()));
+        for(int i = yValueHolder1.size()-1; i >= 0; i--, xVal-=10){
+            graph.lineTo(xVal, (float) (yVal - yValueHolder1.get(i).getY()));
+        }
+
+        this.canvas.drawPath(graph,red_paintbrush_stroke);
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()), 4, green_paintbrush_fill);
+
+        graph = new Path();
+
+        xVal = canvas.getWidth();
+        yVal = canvas.getHeight();
+        graph.moveTo(xVal-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()));
+        for(int i = yValueHolder2.size()-1; i >= 0; i--, xVal-=10){
+            graph.lineTo(xVal, (float) (yVal - yValueHolder2.get(i).getY()));
+        }
+
+        this.canvas.drawPath(graph,white_paintbrush_stroke);
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()), 4, green_paintbrush_fill);
+
     }
 
     private void prepPaintBrushes(){
@@ -202,9 +236,17 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         blue_paintbrush_stroke.setColor(Color.GREEN);
         blue_paintbrush_stroke.setStyle(Paint.Style.STROKE);
         blue_paintbrush_stroke.setStrokeWidth(3);
+
+        white_paintbrush_stroke = new Paint();
+        white_paintbrush_stroke.setColor(Color.WHITE);
+        white_paintbrush_stroke.setStyle(Paint.Style.STROKE);
+        white_paintbrush_stroke.setStrokeWidth(3);
+
         float radius = 50.0f;
         CornerPathEffect corner = new CornerPathEffect(radius);
         blue_paintbrush_stroke.setPathEffect(corner);
+        red_paintbrush_stroke.setPathEffect(corner);
+        white_paintbrush_stroke.setPathEffect(corner);
 
         green_paintbrush_stroke = new Paint();
         green_paintbrush_stroke.setColor(Color.YELLOW);
@@ -217,10 +259,23 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
 
     public boolean updateGraph(double yVal){
 
-        yValueHolder.add(new XYValue(0, yVal*0.2));
+        yValueHolder.add(new XYValue(0, yVal*0.15));
+
         return true;
     }
 
+    public boolean updateGraph2(double yVal){
+
+        yValueHolder1.add(new XYValue(0, yVal*3));
+
+        return true;
+    }
+    public boolean updateGraph3(double yVal){
+
+        yValueHolder2.add(new XYValue(0, yVal*2));
+
+        return true;
+    }
     public void pause(){
 
         canDraw = false;

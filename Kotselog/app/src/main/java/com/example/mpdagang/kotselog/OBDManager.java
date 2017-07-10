@@ -153,9 +153,16 @@ public class OBDManager {
 
         return (float) ((256*A) + B)/4;
     }
+    public float calThrottlePos(String response){
+        String[] step1 = response.substring(6).split("\\s+");
+        int A = Integer.parseInt(step1[0], 16);
 
-    public static float calEngineCoolantTemp(String response){
-        return 1;
+        return (float) (100 * A)/255;
+    }
+
+    public float calEngineCoolantTemp(String response){
+        String[] step1 = response.substring(6).split("\\s+");
+        return Integer.parseInt(step1[0], 16);
     }
 
     public static double calIntakeManifoldPressure(double A){
