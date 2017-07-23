@@ -26,6 +26,7 @@ import java.util.UUID;
 public class BluetoothConnectionService extends Service{
     private static final String TAG = "BluetoothConnectionServ";
     private static final String appName = "MYAPP";
+    //UUID standard for OBD bluetooth SPP Adapter
     private static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private final BluetoothAdapter mBluetoothAdapter;
@@ -51,13 +52,12 @@ public class BluetoothConnectionService extends Service{
     public IBinder onBind(Intent intent) {
         return null;
     }
-
-
     /**
-     * This thread runs while listening for incoming connections. It behaves
-     * like a server-side client. It runs until a connection is accepted
-     * (or until cancelled).
+     * This thread runs while listening for incoming connections. Acts
+     * like a server-side client and runs until a connection is accepted
+     * or cancelled.
      */
+
     //-------------------------- Internal Classes --------------------------
     private class AcceptThread extends Thread {
         
@@ -152,7 +152,7 @@ public class BluetoothConnectionService extends Service{
             // Make a connection to the BluetoothSocket
 
             try {
-                // This is a blocking call and will only return on a
+                // Blocking call and will only return on a
                 // successful connection or an exception
                 mmSocket.connect();
 
@@ -168,7 +168,6 @@ public class BluetoothConnectionService extends Service{
                 Log.d(TAG, "run: ConnectThread: Could not connect to UUID: " + MY_UUID_INSECURE );
             }
 
-            //will talk about this in the 3rd video
             connected(mmSocket,mmDevice);
         }
         public void cancel() {
@@ -182,7 +181,7 @@ public class BluetoothConnectionService extends Service{
     }
 
     /**
-     Finally the ConnectedThread which is responsible for maintaining the BTConnection, Sending the data, and
+     ConnectedThread for maintaining the BTConnection, Sending the data, and
      receiving incoming data through input/output streams respectively.
      **/
     private class ConnectedThread extends Thread {
@@ -197,7 +196,7 @@ public class BluetoothConnectionService extends Service{
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
-            //dismiss the progressdialog when connection is established
+            //dismiss the progress dialog when connection is established
             try{
                 mProgressDialog.dismiss();
             }catch (NullPointerException e){
@@ -251,7 +250,7 @@ public class BluetoothConnectionService extends Service{
             }
         }
 
-        public void setAdapter(){
+        private void setAdapter(){
             Runnable set = new Runnable() {
                 @Override
                 public void run() {

@@ -27,23 +27,23 @@ public class OBDManager {
         add(new PidElement("010D", "1", "1", "1", 1, 1));
         add(new PidElement("010E", "1", "1", "1", 1, 1));
         add(new PidElement("010F", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
-        add(new PidElement("1", "1", "1", "1", 1, 1));
+        add(new PidElement("0110", "1", "1", "1", 1, 1));
+        add(new PidElement("0111", "1", "1", "1", 1, 1));
+        add(new PidElement("0112", "1", "1", "1", 1, 1));
+        add(new PidElement("0113", "1", "1", "1", 1, 1));
+        add(new PidElement("0114", "1", "1", "1", 1, 1));
+        add(new PidElement("0115", "1", "1", "1", 1, 1));
+        add(new PidElement("0116", "1", "1", "1", 1, 1));
+        add(new PidElement("0117", "1", "1", "1", 1, 1));
+        add(new PidElement("0118", "1", "1", "1", 1, 1));
+        add(new PidElement("0119", "1", "1", "1", 1, 1));
+        add(new PidElement("011A", "1", "1", "1", 1, 1));
+        add(new PidElement("011B", "1", "1", "1", 1, 1));
+        add(new PidElement("011C", "1", "1", "1", 1, 1));
+        add(new PidElement("011D", "1", "1", "1", 1, 1));
+        add(new PidElement("011E", "1", "1", "1", 1, 1));
+        add(new PidElement("011F", "1", "1", "1", 1, 1));
+        add(new PidElement("0120", "1", "1", "1", 1, 1));
     }}; */
     public String test = "A3 00 BE 3E B0 00";
     public ArrayList<String> pidListA;
@@ -129,44 +129,75 @@ public class OBDManager {
             }
         }
 
-        //Log.d(TAG, "--------------------value is:" + step2 + ". ");
-        //Log.d(TAG, "---------------------size is:" + step3.length + ". ");
-        //Log.d(TAG, "---------------------size is:" + step4.toString() + ". ");
-        //Log.d(TAG, "---------------------size is:" + step5 + ". ");
-        //Log.d(TAG, "---------------------size is:" + Integer.parseInt(step6[1]) + ". ");
-        //Log.d(TAG, "---------------------size is:" + step4.size() + ". ");
-
         return step4;
 
     }
 
     public float calRPM(String response){
-        //float rpm = 0;
-        //String step1 = response.substring(6).replaceAll(">", "");
-        String[] step2 = response.substring(6).replaceAll(">", "").split("\\s+");
-        int A = Integer.parseInt(step2[0],16);
-        int B = Integer.parseInt(step2[1],16);
-        //Log.d(TAG, "--------------------value is:" + step1 + ". ");
-        //Log.d(TAG, "--------------------value is:" + A + ". ");
-        //Log.d(TAG, "--------------------value is:" + B + ". ");
-        //Log.d(TAG, "--------------------value is:" + rpm + ". ");
+        if(!response.contains("NO") && !response.contains("STO")) {
+            String[] step2 = response.substring(6).split("\\s+");
+            int A = Integer.parseInt(step2[0], 16);
+            int B = Integer.parseInt(step2[1], 16);
 
-        return (float) ((256*A) + B)/4;
+            return (float) ((256 * A) + B) / 4;
+        }else{
+            return 0;
+        }
     }
+
     public float calThrottlePos(String response){
-        String[] step1 = response.substring(6).split("\\s+");
-        int A = Integer.parseInt(step1[0], 16);
+        if(!response.contains("NO") && !response.contains("STO")) {
+            String[] step1 = response.substring(6).split("\\s+");
+            int A = Integer.parseInt(step1[0], 16);
 
-        return (float) (100 * A)/255;
+            return (float) (100 * A) / 255;
+        }else{
+            return 0;
+        }
     }
 
-    public float calEngineCoolantTemp(String response){
+    public float calIntakeManifoldPressure(String response){
+        if(!response.contains("NO") && !response.contains("STO")) {
+            String[] step1 = response.substring(6).split("\\s+");
+            return Integer.parseInt(step1[0], 16);
+        }else{
+            return 0;
+        }
+    }
+
+    public float calVehicleSpeed(String response){
         String[] step1 = response.substring(6).split("\\s+");
         return Integer.parseInt(step1[0], 16);
     }
 
-    public static double calIntakeManifoldPressure(double A){
-        return A;
+    public float calEngineCoolantTemp(String response){
+        String[] step1 = response.substring(6).split("\\s+");
+        return (Integer.parseInt(step1[0], 16)) - 40;
     }
+
+    public float calCalLoad(String response){
+        String[] step1 = response.substring(6).split("\\s+");
+        int A = Integer.parseInt(step1[0], 16);
+        return (float) (A/2.55);
+    }
+
+    public float calIntakeAirTemp(String response){
+        String[] step1 = response.substring(6).split("\\s+");
+        return (Integer.parseInt(step1[0], 16)) - 40;
+    }
+
+    public float calTimingAdvance(String response){
+        String[] step1 = response.substring(6).split("\\s+");
+        int A = Integer.parseInt(step1[0], 16);
+
+        return (float) ((A/2) - 64);
+    }
+    public float calOxygenBank(String response){
+        String[] step1 = response.substring(6).split("\\s+");
+
+        return 1;
+    }
+
+
 
 }

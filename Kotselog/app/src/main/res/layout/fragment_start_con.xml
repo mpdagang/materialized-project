@@ -7,7 +7,7 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp"
     tools:context="com.example.mpdagang.kotselog.Fragments.StartConFrag">
-
+<!--
     <Button
         android:text="ON/OFF"
         android:layout_width="wrap_content"
@@ -23,29 +23,29 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnDiscoverable_on_off"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"/>-->
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnFindUnpairedDevices"
-        android:text="Discover"/>
+        android:text="Discover Adapter"/>
 
     <ListView
         android:layout_marginTop="15dp"
-        android:layout_below="@+id/btnStartConnection"
+        android:layout_below="@+id/btnFindUnpairedDevices"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:id="@+id/lvNewDevices"/>
-
+    <!--
     <Button
         android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnFindUnpairedDevices"
         android:id="@+id/btnStartConnection"
-        android:text="Start Connection"/>
-
+        android:text="Start Connection"/>-->
+    <!--
     <EditText
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -89,8 +89,8 @@
                 android:layout_weight="6.95" />
 
         </LinearLayout>>
-    </ScrollView>
-
+    </ScrollView> -->
+<!--
     <Button
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
@@ -98,6 +98,6 @@
         android:text="@string/back_button"
         android:layout_above="@+id/lvNewDevices"
         android:layout_toLeftOf="@+id/btnSend"
-        android:layout_toStartOf="@+id/btnSend" />
+        android:layout_toStartOf="@+id/btnSend" />-->
 
 </RelativeLayout>

@@ -1,96 +1,60 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="80dp"
+    android:paddingRight="80dp"
     tools:context="com.example.mpdagang.kotselog.Fragments.NavFrag">
 
-    <TextView
-        android:id="@+id/navHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:text="@string/nav_header"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/btnNav1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/nav_button1"
-        android:layout_below="@+id/navHeader"
-        android:layout_centerHorizontal="true" />
-
+        android:textSize="20sp"/>
     <Button
         android:id="@+id/btnNav2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/nav_button2"
-        android:layout_below="@+id/btnNav1"
-        android:layout_alignLeft="@+id/btnNav1"
-        android:layout_alignStart="@+id/btnNav1"
-        android:layout_alignRight="@+id/btnNav1"
-        android:layout_alignEnd="@+id/btnNav1" />
-
+        android:textSize="20sp" />
     <Button
         android:id="@+id/btnNav3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/nav_button3"
-        android:layout_below="@+id/btnNav2"
-        android:layout_alignLeft="@+id/btnNav2"
-        android:layout_alignStart="@+id/btnNav2"
-        android:layout_marginTop="19dp"
-        android:layout_alignRight="@+id/btnNav2"
-        android:layout_alignEnd="@+id/btnNav2" />
-
+        android:textSize="20sp" />
     <Button
         android:id="@+id/btnNav4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnNav3"
-        android:layout_alignStart="@+id/btnNav3"
-        android:layout_below="@+id/btnNav3"
-        android:layout_marginTop="13dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/nav_button4"
-        android:layout_alignRight="@+id/btnNav3"
-        android:layout_alignEnd="@+id/btnNav3" />
-
+        android:textSize="20sp" />
     <Button
         android:id="@+id/btnNav5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnNav4"
-        android:layout_alignStart="@+id/btnNav4"
-        android:layout_below="@+id/btnNav4"
-        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/nav_button5"
-        android:layout_alignRight="@+id/btnNav4"
-        android:layout_alignEnd="@+id/btnNav4" />
-
+        android:textSize="20sp" />
     <Button
         android:id="@+id/btnNav6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/nav_button6"
-        android:layout_below="@+id/btnNav5"
-        android:layout_alignLeft="@+id/btnNav5"
-        android:layout_alignStart="@+id/btnNav5"
-        android:layout_alignRight="@+id/btnNav5"
-        android:layout_alignEnd="@+id/btnNav5" />
-
+        android:textSize="20sp" />
     <Button
         android:id="@+id/btnNav7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/nav_button7"
-        android:layout_below="@+id/btnNav6"
-        android:layout_alignLeft="@+id/btnNav6"
-        android:layout_alignStart="@+id/btnNav6"
-        android:layout_marginTop="15dp"
-        android:layout_alignRight="@+id/btnNav6"
-        android:layout_alignEnd="@+id/btnNav6" />
-
-</RelativeLayout>
+        android:textSize="20sp" />
+</LinearLayout>

@@ -9,15 +9,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ComposePathEffect;
 import android.graphics.CornerPathEffect;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -26,28 +30,27 @@ import java.util.Random;
  * Created by MPDagang on 30/06/2017.
  */
 
-public class Activity_Animation002_Layout extends SurfaceView implements Runnable, SurfaceHolder.Callback {
+public class Activity_Animation002_Layout extends SurfaceView implements Runnable, SurfaceHolder.Callback, View.OnTouchListener{
     Thread thread = null;
     boolean canDraw = true;
 
-    public Paint red_paintbrush_fill;
-    public Paint blue_paintbrush_fill;
-    public Paint green_paintbrush_fill;
+    public ArrayList<Paint> graphColor;
+    public ArrayList<Paint> fontColor;
+    public ArrayList<ArrayList<Float>> graphAt;
 
-    public Paint red_paintbrush_stroke;
-    public Paint blue_paintbrush_stroke;
-    public Paint green_paintbrush_stroke;
-    public Paint white_paintbrush_stroke;
     public Paint transparent;
 
+    public Paint indicator;
+    public Paint tracker;
+
     public Path eraser;
-    public Path graph;
+
+    public Path graph1;
+
     public ArrayList<XYValue> yValueHolder;
     public ArrayList<XYValue> yValueHolder1;
     public ArrayList<XYValue> yValueHolder2;
-
-    Bitmap cherry;
-    int cherry_x, cherry_y;
+    public ArrayList<XYValue> yValueHolder3;
 
     double frames_per_second;
     double frame_time_seconds;
@@ -55,18 +58,22 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     double frame_time_ns;
     double tLF, tEOR, delta_t;
 
+    public float testX = 100;
+    public float testY = 0;
+
+    public int val1 = 0;
+    public int val2 = 0;
+    public int val3 = 0;
+    public int val4 = 0;
+
     Canvas canvas;
-    Random yRand = new Random();
     SurfaceHolder surfaceHolder;
 
     public Activity_Animation002_Layout(Context context) {
         super(context);
-        //setBackgroundColor(Color.GRAY);
+
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-        cherry = BitmapFactory.decodeResource(getResources(), R.drawable.small_dot);
-        cherry_x = 650;
-        cherry_y = 130;
 
         transparent = new Paint();
         transparent.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -76,9 +83,6 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         frame_time_seconds = 1/frames_per_second;
         frame_time_ms = frame_time_seconds*1000;
         frame_time_ns = frame_time_ms*1000000;
-        //1 sec = 1,000 milisec
-        // 1 sec = 1,000,000,000 nanosec
-        // 1 milisec = 1,000,000 milisec
     }
 
     public Activity_Animation002_Layout(Context context, AttributeSet attrs) {
@@ -86,22 +90,26 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
 
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-        cherry = BitmapFactory.decodeResource(getResources(), R.drawable.small_dot);
-        cherry_x = 650;
-        cherry_y = 130;
 
         transparent = new Paint();
         transparent.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         eraser = new Path();
 
+        this.setOnTouchListener(this);
+
         yValueHolder = new ArrayList<>();
         yValueHolder1 = new ArrayList<>();
         yValueHolder2 = new ArrayList<>();
+        yValueHolder3 = new ArrayList<>();
+        setGraphPaint();
 
-        frames_per_second = 10;
+        frames_per_second = 20;
         frame_time_seconds = 1/frames_per_second;
         frame_time_ms = frame_time_seconds*1000;
         frame_time_ns = frame_time_ms*1000000;
+        //1 sec = 1,000 milisec
+        // 1 sec = 1,000,000,000 nanosec
+        // 1 milisec = 1,000,000 milisec
     }
 
     public Activity_Animation002_Layout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -109,9 +117,6 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
 
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-        cherry = BitmapFactory.decodeResource(getResources(), R.drawable.small_dot);
-        cherry_x = 650;
-        cherry_y = 130;
 
         transparent = new Paint();
         transparent.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -128,38 +133,32 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     public void run() {
         tLF = System.nanoTime();
         delta_t = 0;
-        prepPaintBrushes();
-
-        //yValueHolder = new ArrayList<>();
-        double yVal;
 
         while(canDraw){
             //carry out drawing
-
             if(!surfaceHolder.getSurface().isValid()){
                 continue;
             }
 
-            //yVal = yRand.nextInt(2);
-            //yValueHolder.add(new XYValue(0, yVal));
             canvas = surfaceHolder.lockCanvas();
-            canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(), transparent);
+            canvas.drawPaint(transparent);
             drawGraph();
 
-            if(yValueHolder.size() > 260){
+            if(yValueHolder.size() > 200){
                 yValueHolder.remove(0);
             }
-            if(yValueHolder1.size() > 260){
+            if(yValueHolder1.size() > 200){
                 yValueHolder1.remove(0);
-            }if(yValueHolder2.size() > 260){
+            }if(yValueHolder2.size() > 200){
                 yValueHolder2.remove(0);
-            }
+            }/*if(yValueHolder3.size() > 200){
+                yValueHolder3.remove(0);
+            }*/
+
             surfaceHolder.unlockCanvasAndPost(canvas);
 
             tEOR = System.nanoTime();
-
             delta_t = frame_time_ns - (tEOR - tLF);
-
 
             try {
                 if(delta_t > 0) {
@@ -169,115 +168,148 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
                 e.printStackTrace();
             }
             tLF = System.nanoTime();
-
         }
-
     }
 
     public void drawGraph(){
-        graph = new Path();
+
+
 
         int xVal = canvas.getWidth();
         double yVal = canvas.getHeight();
-        graph.moveTo(xVal-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()));
-        for(int i = yValueHolder.size()-1; i >= 0; i--, xVal-=10){
-            graph.lineTo(xVal, (float) (yVal - yValueHolder.get(i).getY()));
+
+        graph1 = new Path();
+
+        graph1.moveTo(xVal-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()));
+        for(int i = yValueHolder.size()-1; i >= 0; i--, xVal-=11){
+            graph1.lineTo(xVal, (float) (yVal - yValueHolder.get(i).getY()));
+            if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
+                this.canvas.drawText(Integer.toString((int)(yValueHolder.get(i).getY()/0.1 )), testX,(float) (yVal - yValueHolder.get(i).getY()), fontColor.get(0));
+            }
         }
 
-        this.canvas.drawPath(graph,blue_paintbrush_stroke);
-        this.canvas.drawText("val: " + yValueHolder.get(yValueHolder.size()-1).getY(), 3,30, green_paintbrush_stroke);
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()), 4, red_paintbrush_fill);
+        this.canvas.drawPath(graph1,graphColor.get(0));
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()), 4, tracker);
 
-        graph = new Path();
+        graph1 = new Path();
 
         xVal = canvas.getWidth();
         yVal = canvas.getHeight();
-        graph.moveTo(xVal-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()));
-        for(int i = yValueHolder1.size()-1; i >= 0; i--, xVal-=10){
-            graph.lineTo(xVal, (float) (yVal - yValueHolder1.get(i).getY()));
+        graph1.moveTo(xVal-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()));
+        for(int i = yValueHolder1.size()-1; i >= 0; i--, xVal-=11){
+            graph1.lineTo(xVal, (float) (yVal - yValueHolder1.get(i).getY()));
+            if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
+                this.canvas.drawText(Integer.toString((int)(yValueHolder1.get(i).getY()/3 )), testX,(float) (yVal - yValueHolder1.get(i).getY()), fontColor.get(1));
+            }
         }
 
-        this.canvas.drawPath(graph,red_paintbrush_stroke);
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()), 4, green_paintbrush_fill);
+        this.canvas.drawPath(graph1,graphColor.get(1));
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()), 4, tracker);
 
-        graph = new Path();
+        graph1 = new Path();
 
         xVal = canvas.getWidth();
         yVal = canvas.getHeight();
-        graph.moveTo(xVal-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()));
-        for(int i = yValueHolder2.size()-1; i >= 0; i--, xVal-=10){
-            graph.lineTo(xVal, (float) (yVal - yValueHolder2.get(i).getY()));
+        graph1.moveTo(xVal-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()));
+        for(int i = yValueHolder2.size()-1; i >= 0; i--, xVal-=11){
+            graph1.lineTo(xVal, (float) (yVal - yValueHolder2.get(i).getY()));
+            if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
+                this.canvas.drawText(Integer.toString((int)(yValueHolder2.get(i).getY()/3 )), testX,(float) (yVal - yValueHolder2.get(i).getY()), fontColor.get(2));
+            }
         }
 
-        this.canvas.drawPath(graph,white_paintbrush_stroke);
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()), 4, green_paintbrush_fill);
+        this.canvas.drawPath(graph1,graphColor.get(2));
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()), 4, tracker);
+        /*
+        graph1 = new Path();
 
-    }
+        xVal = canvas.getWidth();
+        yVal = canvas.getHeight();
+        graph1.moveTo(xVal-1, (float) (yVal - yValueHolder3.get(yValueHolder3.size()-1).getY()));
+        for(int i = yValueHolder3.size()-1; i >= 0; i--, xVal-=11){
+            graph1.lineTo(xVal, (float) (yVal - yValueHolder3.get(i).getY()));
+            if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
+                this.canvas.drawText(Integer.toString((int)(yValueHolder3.get(i).getY()/2 )), testX,(float) (yVal - yValueHolder3.get(i).getY()), fontColor.get(3));
+            }
+        }
 
-    private void prepPaintBrushes(){
-        red_paintbrush_fill = new Paint();
-        red_paintbrush_fill.setColor(Color.RED);
-        red_paintbrush_fill.setStyle(Paint.Style.FILL);
+        this.canvas.drawPath(graph1,graphColor.get(3));
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder3.get(yValueHolder3.size()-1).getY()), 4, tracker);
+        */
+        graph1 = new Path();
+        graph1.moveTo(testX, 0);
+        graph1.lineTo(testX, canvas.getHeight());
+        this.canvas.drawPath(graph1, indicator);
 
-        blue_paintbrush_fill = new Paint();
-        blue_paintbrush_fill.setColor(Color.BLUE);
-        blue_paintbrush_fill.setStyle(Paint.Style.FILL);
-
-        green_paintbrush_fill = new Paint();
-        green_paintbrush_fill.setColor(Color.GREEN);
-        green_paintbrush_fill.setStyle(Paint.Style.FILL);
-
-        red_paintbrush_stroke = new Paint();
-        red_paintbrush_stroke.setColor(Color.RED);
-        red_paintbrush_stroke.setStyle(Paint.Style.STROKE);
-        red_paintbrush_stroke.setStrokeWidth(3);
-
-        blue_paintbrush_stroke = new Paint();
-        blue_paintbrush_stroke.setColor(Color.GREEN);
-        blue_paintbrush_stroke.setStyle(Paint.Style.STROKE);
-        blue_paintbrush_stroke.setStrokeWidth(3);
-
-        white_paintbrush_stroke = new Paint();
-        white_paintbrush_stroke.setColor(Color.WHITE);
-        white_paintbrush_stroke.setStyle(Paint.Style.STROKE);
-        white_paintbrush_stroke.setStrokeWidth(3);
-
-        float radius = 50.0f;
-        CornerPathEffect corner = new CornerPathEffect(radius);
-        blue_paintbrush_stroke.setPathEffect(corner);
-        red_paintbrush_stroke.setPathEffect(corner);
-        white_paintbrush_stroke.setPathEffect(corner);
-
-        green_paintbrush_stroke = new Paint();
-        green_paintbrush_stroke.setColor(Color.YELLOW);
-        //green_paintbrush_stroke.setStyle(Paint.Style.STROKE);
-        //green_paintbrush_stroke.setStrokeWidth(3);
-        green_paintbrush_stroke.setAntiAlias(true);
-        green_paintbrush_stroke.setTextSize(30);
-        green_paintbrush_stroke.setTypeface(Typeface.DEFAULT_BOLD);
+        this.canvas.drawText("RPM     : " + val1 + "rpm", 3, 38, fontColor.get(0));
+       this.canvas.drawText("Throttle Position: " + val2 + "%", 3, 77, fontColor.get(1));
+        this.canvas.drawText("Intake Manifold Pressure: " + val3 + "kPa", 3, 116, fontColor.get(2));
+        //this.canvas.drawText("Vehicle Speed: " + val4 + "km/h", 3, 154, fontColor.get(3));
     }
 
     public boolean updateGraph(double yVal){
-
-        yValueHolder.add(new XYValue(0, yVal*0.15));
-
+        val1 = (int) yVal;
+        yValueHolder.add(new XYValue(0, yVal*0.1));
         return true;
     }
 
     public boolean updateGraph2(double yVal){
-
+        val2 = (int) yVal;
         yValueHolder1.add(new XYValue(0, yVal*3));
-
         return true;
     }
     public boolean updateGraph3(double yVal){
-
-        yValueHolder2.add(new XYValue(0, yVal*2));
-
+        val3 = (int) yVal;
+        yValueHolder2.add(new XYValue(0, yVal*3));
         return true;
     }
-    public void pause(){
 
+    public boolean updateGraph4(double yVal){
+        val4 = (int) yVal;
+        yValueHolder3.add(new XYValue(0, yVal*2));
+        return true;
+    }
+
+    private void setGraphPaint(){
+        int i;
+        graphColor = new ArrayList<>();
+        fontColor = new ArrayList<>();
+        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{30.0f, 10.0f}, 0);
+        CornerPathEffect corner = new CornerPathEffect(50.0f);
+
+        for(i = 0; i < 4; i++) {
+            graphColor.add(new Paint());
+            graphColor.get(i).setStyle(Paint.Style.STROKE);
+            graphColor.get(i).setStrokeWidth(3);
+            graphColor.get(i).setPathEffect(corner);
+
+            fontColor.add(new Paint());
+            fontColor.get(i).setAntiAlias(true);
+            fontColor.get(i).setTextSize(35);
+            fontColor.get(i).setTypeface(Typeface.DEFAULT_BOLD);
+        }
+
+        graphColor.get(0).setColor(Color.GREEN);
+        graphColor.get(1).setColor(Color.RED);
+        graphColor.get(2).setColor(Color.WHITE);
+        graphColor.get(3).setColor(Color.YELLOW);
+
+        fontColor.get(0).setColor(Color.GREEN);
+        fontColor.get(1).setColor(Color.RED);
+        fontColor.get(2).setColor(Color.WHITE);
+        fontColor.get(3).setColor(Color.YELLOW);
+
+        indicator = new Paint();
+        indicator.setColor(Color.LTGRAY);
+        indicator.setStyle(Paint.Style.STROKE);
+        indicator.setStrokeWidth(3);
+        indicator.setPathEffect(dashPathEffect);
+
+        tracker = new Paint();
+        tracker.setColor(Color.BLUE);
+        tracker.setStyle(Paint.Style.FILL);
+    }
+    public void pause(){
         canDraw = false;
         while(true) {
             try {
@@ -297,17 +329,18 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-
-    }
+    public void surfaceCreated(SurfaceHolder holder) {}
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(SurfaceHolder holder) {}
 
+    @Override
+    public boolean onTouch(View v, MotionEvent m) {
+        // touch event sets where the vertical indicator is placed
+        testX = m.getX();
+        return false;
     }
 }

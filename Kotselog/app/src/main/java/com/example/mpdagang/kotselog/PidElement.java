@@ -21,6 +21,10 @@ public class PidElement {
         this.max =max;
     }
 
+    public PidElement(String id){
+        this.id = id;
+    }
+
     public String getId(){
         return id;
     }
@@ -47,6 +51,28 @@ public class PidElement {
 
     public static float translateValueToGraph(float value, float height){
         return value;
+    }
+
+    private void setSubAttributes(){
+        /*
+        * 0 1 2 3 4 5 6 - 0
+        * 0 1 2 3 4 5 6 - 1
+        * 0 1 2 3 4 5 6 - 2
+        * 0 1 2 3 4 5 6 - 3
+        * 0 1 2 3 4 5 6 - 4
+        * 0 1 2 3 4 5 6 - 5
+        * 0 1 2 3 4 5 6 - 6
+        * 0 1 2 3 4 5 6 - 7
+        * 0 1 2 3 4 5 6 - 8
+        * 0 1 2 3 4 5 6 - 9
+        * 0 1 2 3 4 5 6 - A
+        * 0 1 2 3 4 5 6 - B
+        * 0 1 2 3 4 5 6 - C
+        * 0 1 2 3 4 5 6 - D
+        * 0 1 2 3 4 5 6 - E
+        * 0 1 2 3 4 5 6 - F
+        * */
+
     }
 
 }

@@ -15,22 +15,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.androidplot.xy.XYPlot;
 import com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout;
 import com.example.mpdagang.kotselog.GraphListAdapter;
 import com.example.mpdagang.kotselog.MainActivity;
 import com.example.mpdagang.kotselog.OBDManager;
 import com.example.mpdagang.kotselog.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Random;
 
 
 public class CarOBDFrag extends Fragment {
@@ -42,24 +40,20 @@ public class CarOBDFrag extends Fragment {
     public StringBuilder wholeResponse;
     public String text;
 
-    private Button startLog;
-    private Button stopLog;
-    private Button testButton;
-
-    private Spinner option1;
-    private Spinner option2;
-    private Spinner option3;
-
     private LinearLayout test;
     private Activity_Animation002_Layout testGraph;
 
-    private TextView graphLabel1;
+    private TextView speedDis;
+    private EditText speedSetter;
+
     private Thread stream;
     private Runnable streamer;
     public OBDManager o = new OBDManager();
     public boolean canSend = false;
     public byte[] bytes;
     public int flag = 1;
+    public int toggle = 1;
+    public int speed = 200;
 
     public BroadcastReceiver cReceiver = new BroadcastReceiver() {
         @Override
@@ -67,26 +61,39 @@ public class CarOBDFrag extends Fragment {
 
              text = intent.getStringExtra("theMessage");
 
-            messages.append(text);
+           // messages.append(text);
             wholeResponse.append(text);
 
-            //incomingMessages.setText(messages);
             if (text.contains(">")){
-                Log.d(TAG,"this " + wholeResponse.toString() + " is the whole reply");
-                double x;
-                if(flag == 1) {
-                    x = (double) o.calRPM(wholeResponse.toString());
-                    graphLabel1.setText("value :" + x + ". ");
-                    testGraph.updateGraph(x);
+                Log.d(TAG,"this " + wholeResponse.toString() + " is the whole reply , flag:"+ flag +" toggle:"+toggle+".");
+                /*
+                if(wholeResponse.toString().contains("STOP")){
+                    resetData();
+
+                }
+                * if response is No data or Stopped,
+                * 1. stop request thread and notify user
+                * 2. increment time delay for request
+                * 3. reset adapter and notify user if it is successfull,
+                * 4. start thread
+                *
+                * */
+                double value;
+                if(flag == 1 && toggle == 2) {
+                    value = (double) o.calRPM(wholeResponse.toString());
+                    testGraph.updateGraph(value); // green
                     flag = 2;
-                }else if(flag == 2){
-                    x = (double) o.calEngineCoolantTemp(wholeResponse.toString());
-                    testGraph.updateGraph3(x);
+                }
+                else if(flag == 2 && toggle == 3){
+                    value = (double) o.calIntakeManifoldPressure(wholeResponse.toString());
+                    testGraph.updateGraph3(value); //white
                     flag = 3;
-                }else{
-                    x = (double) o.calThrottlePos(wholeResponse.toString());
-                    testGraph.updateGraph2(x);
+                }else if(flag == 3 && toggle == 1){
+                    value = (double) o.calThrottlePos(wholeResponse.toString());
+                    testGraph.updateGraph2(value); //red
                     flag = 1;
+                }else{
+
                 }
 
                 wholeResponse = new StringBuilder();
@@ -100,7 +107,16 @@ public class CarOBDFrag extends Fragment {
     public CarOBDFrag() {
         // Required empty public constructor
     }
+    public boolean resetDatalog(){
 
+        canSend = false;
+        toggle = 1;
+        flag = 1;
+        speed = speed + 100;
+        stream = new Thread(streamer);
+        stream.start();
+        return true;
+    }
 
 
     @Override
@@ -117,38 +133,36 @@ public class CarOBDFrag extends Fragment {
 
         }
 
-        startLog = (Button) view.findViewById(R.id.startLogBtn);
-        stopLog = (Button) view.findViewById(R.id.stopLogBtn);
-        testButton = (Button) view.findViewById(R.id.testButton);
+        Button startLog = (Button) view.findViewById(R.id.startLogBtn);
+        Button stopLog = (Button) view.findViewById(R.id.stopLogBtn);
+        Button testButton = (Button) view.findViewById(R.id.testButton);
+        Button setButton = (Button) view.findViewById(R.id.setBtn);
 
-        graphLabel1 = (TextView) view.findViewById(R.id.graph1Label);
 
+        speedDis = (TextView) view.findViewById(R.id.speedDisplay);
+        speedDis.setText("current speed request: "+speed+"m/s");
+
+        speedSetter = (EditText) view.findViewById(R.id.speedSet);
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, availablePids);
         spinnerAdapter.add(" ");
 
-
-
-        option1 = (Spinner) view.findViewById(R.id.graph1Var1);
+        Spinner option1 = (Spinner) view.findViewById(R.id.spinnerA1);
         option1.setAdapter(spinnerAdapter);
         option1.setSelection(spinnerAdapter.getCount()-1);
-        option2 = (Spinner) view.findViewById(R.id.graph1Var2);
+        Spinner option2 = (Spinner) view.findViewById(R.id.spinnerA2);
         option2.setAdapter(spinnerAdapter);
         option2.setSelection(spinnerAdapter.getCount()-1);
-        option3 = (Spinner) view.findViewById(R.id.graph1Var3);
+        Spinner option3 = (Spinner) view.findViewById(R.id.spinnerA3);
         option3.setAdapter(spinnerAdapter);
         option3.setSelection(spinnerAdapter.getCount()-1);
-
-
 
         startLog.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                for(int i = 0; i < mGraphListAdapter.getCount(); i++) {
-                    View baby = test.getChildAt(i);
+                    View baby = test.getChildAt(0);
                     Activity_Animation002_Layout anotherBaby = (Activity_Animation002_Layout) baby.findViewById(R.id.pidGraph);
                     anotherBaby.resume();
-                }
             }
 
         });
@@ -156,54 +170,53 @@ public class CarOBDFrag extends Fragment {
         stopLog.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                for(int i = 0; i < mGraphListAdapter.getCount(); i++) {
-                    View baby = test.getChildAt(i);
+                    View baby = test.getChildAt(0);
                     Activity_Animation002_Layout anotherBaby = (Activity_Animation002_Layout) baby.findViewById(R.id.pidGraph);
                     anotherBaby.pause();
-                }
-
             }
         });
 
-        testButton.setOnClickListener(new View.OnClickListener() {
+        setButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"testButton: starting stream");
-                    View baby = test.getChildAt(0);
-                    testGraph = (Activity_Animation002_Layout) baby.findViewById(R.id.pidGraph);
-                    streamer = new Runnable() {
+                speed = Integer.parseInt((speedSetter.getText().toString()));
+                speedDis.setText("current speed request: "+speed+"m/s");
+            }
+        });
+
+
+        streamer = new Runnable() {
 
                         @Override
                         public void run() {
                             canSend = true;
-                            int toggle = 1;
+
                             while(canSend){
                                 String modMessage;
 
-                                if(toggle == 1) {
-                                    modMessage = "010C1" + "\r";
-                                    //modMessage = modMessage + "\r";
+                                if(toggle == 1 && flag == 1) {
+                                    modMessage = "010C1" + "\r"; // rpm
                                     bytes = modMessage.getBytes();
                                     ((MainActivity) getActivity()).writeToStream(bytes);
                                     toggle = 2;
-                                }else if(toggle == 2){
-                                    modMessage = "010B1" + "\r";
-                                    //modMessage = modMessage + "\r";
+                                }
+                                else if(toggle == 2 && flag == 2){
+                                    modMessage = "010B1" + "\r"; // intake manifold pressure
                                     bytes = modMessage.getBytes();
                                     ((MainActivity) getActivity()).writeToStream(bytes);
                                     toggle = 3;
-                                }else{
-                                    modMessage = "01111" + "\r";
-                                    //modMessage = modMessage + "\r";
+                                }
+                                else if(toggle == 3 && flag == 3){
+                                    modMessage = "01111" + "\r"; // throttle position
                                     bytes = modMessage.getBytes();
                                     ((MainActivity) getActivity()).writeToStream(bytes);
                                     toggle = 1;
+                                }else{
+
                                 }
 
-
-
                                 try {
-                                    Thread.sleep(200);
+                                    Thread.sleep(speed);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -211,9 +224,65 @@ public class CarOBDFrag extends Fragment {
                             }
                         }
                     };
+
+
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"testButton: starting stream");
+                    View baby = test.getChildAt(0);
+                    testGraph = (Activity_Animation002_Layout) baby.findViewById(R.id.pidGraph);
+                    /*streamer = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            canSend = true;
+
+                            while(canSend){
+                                String modMessage;
+
+                                if(toggle == 1 && flag == 1) {
+                                    modMessage = "010C1" + "\r"; // rpm
+                                    bytes = modMessage.getBytes();
+                                    ((MainActivity) getActivity()).writeToStream(bytes);
+                                    toggle = 2;
+                                }
+                                else if(toggle == 2 && flag == 2){
+                                    modMessage = "010B1" + "\r"; // intake manifold pressure
+                                    bytes = modMessage.getBytes();
+                                    ((MainActivity) getActivity()).writeToStream(bytes);
+                                    toggle = 3;
+                                }
+                                else if(toggle == 3 && flag == 3){
+                                    modMessage = "01111" + "\r"; // throttle position
+                                    bytes = modMessage.getBytes();
+                                    ((MainActivity) getActivity()).writeToStream(bytes);
+                                    toggle = 1;
+                                }else{
+
+                                }
+
+                                try {
+                                    Thread.sleep(speed);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                    };*/
                 stream = new Thread(streamer);
                 stream.start();
+            }
+        });
 
+        Button returnToNav = (Button) view.findViewById(R.id.backBtn);
+
+        returnToNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Return to \n main navigation fragment", Toast.LENGTH_SHORT).show();
+                ((MainActivity)getActivity()).setViewPager(0);
             }
         });
 
@@ -229,9 +298,8 @@ public class CarOBDFrag extends Fragment {
         o = new OBDManager();
 
         availablePids  = o.decodeAvailable("test");
-        o.calRPM("A3 0C 0E 96");
         setGraph = new ArrayList<>();
-        setGraph.add("RPM");
+        setGraph.add("GRAPH A");
         mGraphListAdapter = new GraphListAdapter(getActivity(), setGraph);
     }
 

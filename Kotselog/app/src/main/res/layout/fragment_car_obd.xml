@@ -15,6 +15,14 @@
             android:layout_height="50dp"
             android:orientation="horizontal"
             android:id="@+id/sectionA">
+
+            <Button
+                android:id="@+id/backBtn"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="24dp"
+                android:text="Back" />
                 <Button
                     android:id="@+id/startLogBtn"
                     android:layout_width="0dp"
@@ -28,14 +36,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Stop Log" />
-                <Button
-                    android:id="@+id/testButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Test" />
-        </LinearLayout>
 
+            <Button
+                android:id="@+id/testButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Test" />
+        </LinearLayout>
 
 
         <LinearLayout
@@ -45,130 +53,121 @@
             android:id="@+id/sectionB"
             android:orientation="vertical">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/graph1Label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:text="Graph 1" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_margin="5dp">
 
-                        <Spinner
-                            android:id="@+id/graph1Var1"
+
+                                <TextView
+                                    android:id="@+id/graphALabel"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Graph A" />
+                                <Spinner
+                                    android:id="@+id/spinnerA1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                                <Spinner
+                                    android:id="@+id/spinnerA2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                                <Spinner
+                                    android:id="@+id/spinnerA3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_margin="5dp">
+                                <TextView
+                                    android:id="@+id/graphBLabel"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Graph B" />
+                                <Spinner
+                                    android:id="@+id/spinnerB1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                                <Spinner
+                                    android:id="@+id/spinnerB2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+                                <Spinner
+                                    android:id="@+id/spinnerB3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_margin="5dp">
+                                <TextView
+                                    android:id="@+id/graphCLabel"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Graph C" />
+                                <Spinner
+                                    android:id="@+id/spinnerC1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                                <Spinner
+                                    android:id="@+id/spinnerC2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                                <Spinner
+                                    android:id="@+id/spinnerC3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
+
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/sectionC">
+
+
+                        <EditText
+                            android:id="@+id/speedSet"
                             android:layout_width="100dp"
-                            android:layout_height="25dp"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginTop="30dp" />
-
-                        <Spinner
-                            android:id="@+id/graph1Var2"
-                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/graph1Var1"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignRight="@+id/graph1Var1"
-                            android:layout_centerVertical="true" />
+                            android:ems="10"
+                            android:inputType="textPersonName" />
 
-                        <Spinner
-                            android:id="@+id/graph1Var3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/graph1Var2"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignRight="@+id/graph1Var2"
-                            android:layout_below="@+id/graph1Var2"
-                            android:layout_marginTop="12dp" />
-
-                        <Spinner
-                            android:id="@+id/spinner"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/graph1Var1"
-                            android:layout_marginLeft="14dp"
-                            android:layout_marginStart="14dp"
-                            android:layout_toEndOf="@+id/graph1Var1"
-                            android:layout_toRightOf="@+id/graph1Var1" />
-
-                        <Spinner
-                            android:id="@+id/spinner2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignLeft="@+id/spinner"
-                            android:layout_alignStart="@+id/spinner"
-                            android:layout_alignTop="@+id/graph1Var2"
-                            android:layout_alignRight="@+id/spinner"
-                            android:layout_alignEnd="@+id/spinner" />
-
-                        <Spinner
-                            android:id="@+id/spinner3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignLeft="@+id/spinner2"
-                            android:layout_alignStart="@+id/spinner2"
-                            android:layout_alignTop="@+id/graph1Var3"
-                            android:layout_alignRight="@+id/spinner2"
-                            android:layout_alignEnd="@+id/spinner2" />
-
-                        <Spinner
-                            android:id="@+id/spinner4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginStart="15dp"
-                            android:layout_alignTop="@+id/graph1Var1"
-                            android:layout_toRightOf="@+id/spinner"
-                            android:layout_toEndOf="@+id/spinner" />
-
-                        <Spinner
-                            android:id="@+id/spinner5"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/spinner2"
-                            android:layout_alignLeft="@+id/spinner4"
-                            android:layout_alignStart="@+id/spinner4" />
-
-                        <Spinner
-                            android:id="@+id/spinner6"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/spinner3"
-                            android:layout_alignLeft="@+id/spinner5"
-                            android:layout_alignStart="@+id/spinner5" />
+                        <Button
+                            android:id="@+id/setBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Set Speed" />
 
                         <TextView
-                            android:id="@+id/textView"
+                            android:id="@+id/speedDisplay"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignLeft="@+id/spinner"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignStart="@+id/spinner"
-                            android:text="Graph 2" />
-
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignLeft="@+id/spinner4"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignStart="@+id/spinner4"
-                            android:text="Graph 3" />
-
-
-                </RelativeLayout>
-
+                            android:layout_height="match_parent" />
+                </LinearLayout>
 
                 <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                         <LinearLayout
                             android:layout_width="match_parent"

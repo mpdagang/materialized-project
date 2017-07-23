@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
+
     //-------------------------------Variables-------------------------------
     private static final String TAG = "MainActivity";
 
@@ -24,17 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public BluetoothConnectionService mBlueConServ;
     public StringBuilder mainResponse;
     public String curResponse;
-    public ArrayList<String> pidList;
-    /*
-    public BroadcastReceiver mainReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "mainReceiver: received response from incomingMessageIntent");
-            String text = intent.getStringExtra("theMessage");
-            mainResponse.append(text);
-            curResponse = text;
-        }
-    };*/
+    public ArrayList<PidElement> pidList;
 
     //-------------------------------Functions-------------------------------
     @Override
@@ -44,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Started");
 
         mSectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
-        //LocalBroadcastManager.getInstance(this).registerReceiver(mainReceiver, new IntentFilter("incomingMessage"));
         mainResponse = new StringBuilder();
         curResponse = new String();
         mViewPager = (ViewPager) findViewById(R.id.container);
+        pidList = new ArrayList<>();
         setupViewPager(mViewPager);
     }
 
@@ -72,34 +63,5 @@ public class MainActivity extends AppCompatActivity {
     }
     public void writeToStream(byte[] bytes){
         mBlueConServ.write(bytes);
-
     }
-    /*
-    public StringBuilder getValueOfCommand(byte[] bytes){
-        mainResponse = new StringBuilder();
-        curResponse = new String();
-        mBlueConServ.write(bytes);
-        int j = 0;
-        Runnable waiter = new Runnable() {
-            int i = 0;
-            @Override
-            public void run() {
-                while(!curResponse.contains(">")){
-                    i=i+1;
-                }
-                Log.d(TAG, "whole response built" + mainResponse);
-            }
-        };
-        Thread waitThread = new Thread(waiter);
-        waitThread.start();
-
-        //return mainResponse.toString().replaceAll("\n", " ");
-        while(waitThread.isAlive()){
-           j = j+2;
-        }
-        Toast.makeText(this, "Response is " + mainResponse + "message", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "getValueOfCommand: Sending response back to requester");
-        return mainResponse;
-    }*/
-    //-------------------------------Classes-------------------------------
 }

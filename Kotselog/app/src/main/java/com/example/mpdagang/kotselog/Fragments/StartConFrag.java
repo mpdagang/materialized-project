@@ -2,10 +2,12 @@ package com.example.mpdagang.kotselog.Fragments;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 
-public class StartConFrag extends Fragment implements AdapterView.OnItemClickListener{
+public class StartConFrag extends Fragment implements AdapterView.OnItemClickListener, DialogInterface.OnClickListener{
     private static final String TAG = "StartConFragment";
     private static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -136,9 +138,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
                 mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
                 lvNewDevices.setAdapter(mDeviceListAdapter);
-                //View convertView = lvNewDevices.getChildAt(1);
-                //TextView t=(TextView) convertView.findViewById(R.id.tvDeviceName);
-                //t.setText("this is a Test");
 
             }
         }
@@ -182,11 +181,20 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
             messages.append(text);
             wholeResponse.append(text);
 
-            incomingMessages.setText(messages);
-            if (text.contains(">")){
-                Log.d(TAG,"this " + wholeResponse + " is the whole reply");
+            //incomingMessages.setText(messages);
+            if (wholeResponse.toString().contains(">") && wholeResponse.toString().contains("00") && wholeResponse.toString().contains("S")){
+                Log.d(TAG,"this " + wholeResponse.toString()+ " is the whole reply");
                 wholeResponse = new StringBuilder();
+                //incomingMessages.setText(wholeResponse);
+                AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
+                a.setMessage("Kotselog connected to adapter");
+                a.setCancelable(false);
+                a.setPositiveButton("Ok", StartConFrag.this);
+                AlertDialog alert = a.create();
+                alert.setTitle("Success");
+                alert.show();
             }
+
 
 
             Log.d(TAG,"Data written on field");
@@ -200,17 +208,17 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         Log.d(TAG, "onCreateView: called.");
         View view =  inflater.inflate(R.layout.fragment_start_con, container, false);
 
-        backBtn = (Button) view.findViewById(R.id.backButton);
-        btnONOFF = (Button) view.findViewById(R.id.btnONOFF);
-        btnSend = (Button) view.findViewById(R.id.btnSend);
-        btnEnableDisable_Discoverable = (Button) view.findViewById(R.id.btnDiscoverable_on_off);
+        //backBtn = (Button) view.findViewById(R.id.backButton);
+        //btnONOFF = (Button) view.findViewById(R.id.btnONOFF);
+        //btnSend = (Button) view.findViewById(R.id.btnSend);
+        //btnEnableDisable_Discoverable = (Button) view.findViewById(R.id.btnDiscoverable_on_off);
         btnDiscoverDev = (Button) view.findViewById(R.id.btnFindUnpairedDevices);
-        btnStartConnection = (Button) view.findViewById(R.id.btnStartConnection);
+        //btnStartConnection = (Button) view.findViewById(R.id.btnStartConnection);
 
         lvNewDevices = (ListView) view.findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
-        etSend = (EditText) view.findViewById(R.id.editText);
-        incomingMessages = (TextView) view.findViewById(R.id.incomingMessage);
+        //etSend = (EditText) view.findViewById(R.id.editText);
+        //incomingMessages = (TextView) view.findViewById(R.id.incomingMessage);
         messages = new StringBuilder();
         wholeResponse = new StringBuilder();
 
@@ -225,15 +233,15 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
 
         lvNewDevices.setOnItemClickListener(StartConFrag.this);
 
-
+/*
         btnONOFF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: enabling/disabling bluetooth.");
                 enableDisableBT();
             }
-        });
-
+        });*/
+        /*
         btnEnableDisable_Discoverable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,7 +254,7 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
                 getActivity().registerReceiver(mBroadcastReceiver2,intentFilter);
             }
-        });
+        });*/
 
         btnDiscoverDev.setOnClickListener(new View.OnClickListener(){
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -276,28 +284,23 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 }
             }
         });
-
+        /*
         btnStartConnection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startConnection();
             }
         });
-
+    */ /*
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"btnSend: sending Command");
+                wholeResponse = new StringBuilder();
                 String modMessage = etSend.getText().toString();
                 modMessage = modMessage + "\r";
                 bytes = modMessage.getBytes();
                 ((MainActivity)getActivity()).writeToStream(bytes);
-                //incomingMessages = (TextView) view.F
-                //messages = ((MainActivity)getActivity()).getValueOfCommand(bytes);
-
-
-                //incomingMessages.setText(messages);
-
                 etSend.setText("");
             }
         });
@@ -308,7 +311,7 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 Toast.makeText(getActivity(), "Return to \n main navigation fragment", Toast.LENGTH_SHORT).show();
                 ((MainActivity)getActivity()).setViewPager(0);
             }
-        });
+        });*/
 
         return view;
     }
@@ -335,22 +338,17 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         Log.d(TAG, "onPause: called.");
         super.onPause();
         try {
-            //getActivity().unregisterReceiver(mBroadcastReceiver1);
-            //getActivity().unregisterReceiver(mBroadcastReceiver2);
-            //getActivity().unregisterReceiver(mBroadcastReceiver3);
-            //getActivity().unregisterReceiver(mBroadcastReceiver4);
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
             Log.d(TAG, "Unregistered receiver");
         }catch(Exception e){
             Log.d(TAG, "Unable to unregister predefined Receivers");
         }
-        //mBluetoothAdapter.cancelDiscovery();
     }
 
 
 
     //create method for starting connection
-    //***remember the conncction will fail and app will crash if you haven't paired first
+    //***connection will fail and app will crash if not paired
     public void startConnection(){
         //start connection service
         ((MainActivity)getActivity()).startBluetoothConnection(mBTDevice, MY_UUID_INSECURE);
@@ -380,7 +378,7 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
 
 
     /**
-     * This method is required for all devices running API23+
+     * Method required for all devices running API23+
      * Android must programmatically check the permissions for bluetooth. Putting the proper permissions
      * in the manifest is not enough.
      *
@@ -402,7 +400,7 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //first cancel discovery because its very memory intensive.
+        //first cancel discovery, memory intensive.
         mBluetoothAdapter.cancelDiscovery();
 
         Log.d(TAG, "onItemClick: You Clicked on a device.");
@@ -413,17 +411,19 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         Log.d(TAG, "onItemClick: deviceAddress = " + deviceAddress);
 
         //create the bond.
-        //NOTE: Requires API 17+? I think this is JellyBean
+        //NOTE: Requires API 17+
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             Log.d(TAG, "Trying to pair with " + deviceName);
             mBTDevices.get(i).createBond();
             //get paired device to be given later do bluetoothConnectionService instance
             mBTDevice = mBTDevices.get(i);
             ((MainActivity)getActivity()).setBluetoothConnectionService();
-            /*
-            View convertView = lvNewDevices.getChildAt(0);
-            TextView t=(TextView) convertView.findViewById(R.id.tvDeviceName);
-            t.setText("this is a Test");*/
+            startConnection();
         }
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        ((MainActivity)getActivity()).setViewPager(3);
     }
 }
