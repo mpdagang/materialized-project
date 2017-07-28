@@ -1,13 +1,17 @@
+/*
+	KotseLog 1.0
+	July 31, 2017
+	Marion Paulo A. Dagang
+
+	filename:
+*/
+
 package com.example.mpdagang.kotselog.Animation;
 
 import com.example.mpdagang.kotselog.LogBook.XYValue;
-import com.example.mpdagang.kotselog.R;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ComposePathEffect;
 import android.graphics.CornerPathEffect;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
@@ -20,10 +24,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Random;
 
 
 /**
@@ -41,7 +42,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     public Paint transparent;
 
     public Paint indicator;
-    public Paint tracker;
+    public Paint plotTracker;
 
     public Path eraser;
 
@@ -151,9 +152,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
                 yValueHolder1.remove(0);
             }if(yValueHolder2.size() > 200){
                 yValueHolder2.remove(0);
-            }/*if(yValueHolder3.size() > 200){
-                yValueHolder3.remove(0);
-            }*/
+            }
 
             surfaceHolder.unlockCanvasAndPost(canvas);
 
@@ -173,8 +172,6 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
 
     public void drawGraph(){
 
-
-
         int xVal = canvas.getWidth();
         double yVal = canvas.getHeight();
 
@@ -189,7 +186,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         }
 
         this.canvas.drawPath(graph1,graphColor.get(0));
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()), 4, tracker);
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()), 4, plotTracker);
 
         graph1 = new Path();
 
@@ -204,7 +201,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         }
 
         this.canvas.drawPath(graph1,graphColor.get(1));
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()), 4, tracker);
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()), 4, plotTracker);
 
         graph1 = new Path();
 
@@ -219,23 +216,8 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         }
 
         this.canvas.drawPath(graph1,graphColor.get(2));
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()), 4, tracker);
-        /*
-        graph1 = new Path();
+        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()), 4, plotTracker);
 
-        xVal = canvas.getWidth();
-        yVal = canvas.getHeight();
-        graph1.moveTo(xVal-1, (float) (yVal - yValueHolder3.get(yValueHolder3.size()-1).getY()));
-        for(int i = yValueHolder3.size()-1; i >= 0; i--, xVal-=11){
-            graph1.lineTo(xVal, (float) (yVal - yValueHolder3.get(i).getY()));
-            if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
-                this.canvas.drawText(Integer.toString((int)(yValueHolder3.get(i).getY()/2 )), testX,(float) (yVal - yValueHolder3.get(i).getY()), fontColor.get(3));
-            }
-        }
-
-        this.canvas.drawPath(graph1,graphColor.get(3));
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder3.get(yValueHolder3.size()-1).getY()), 4, tracker);
-        */
         graph1 = new Path();
         graph1.moveTo(testX, 0);
         graph1.lineTo(testX, canvas.getHeight());
@@ -244,7 +226,6 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         this.canvas.drawText("RPM     : " + val1 + "rpm", 3, 38, fontColor.get(0));
        this.canvas.drawText("Throttle Position: " + val2 + "%", 3, 77, fontColor.get(1));
         this.canvas.drawText("Intake Manifold Pressure: " + val3 + "kPa", 3, 116, fontColor.get(2));
-        //this.canvas.drawText("Vehicle Speed: " + val4 + "km/h", 3, 154, fontColor.get(3));
     }
 
     public boolean updateGraph(double yVal){
@@ -261,12 +242,6 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     public boolean updateGraph3(double yVal){
         val3 = (int) yVal;
         yValueHolder2.add(new XYValue(0, yVal*3));
-        return true;
-    }
-
-    public boolean updateGraph4(double yVal){
-        val4 = (int) yVal;
-        yValueHolder3.add(new XYValue(0, yVal*2));
         return true;
     }
 
@@ -305,9 +280,9 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         indicator.setStrokeWidth(3);
         indicator.setPathEffect(dashPathEffect);
 
-        tracker = new Paint();
-        tracker.setColor(Color.BLUE);
-        tracker.setStyle(Paint.Style.FILL);
+        plotTracker = new Paint();
+        plotTracker.setColor(Color.BLUE);
+        plotTracker.setStyle(Paint.Style.FILL);
     }
     public void pause(){
         canDraw = false;

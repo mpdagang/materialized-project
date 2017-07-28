@@ -1,3 +1,11 @@
+/*
+	KotseLog 1.0
+	July 31, 2017
+	Marion Paulo A. Dagang
+
+	filename:
+*/
+
 package com.example.mpdagang.kotselog.Fragments;
 
 import android.content.BroadcastReceiver;
@@ -26,6 +34,7 @@ import com.example.mpdagang.kotselog.Animation.Activity_Animation002_Layout;
 import com.example.mpdagang.kotselog.GraphListAdapter;
 import com.example.mpdagang.kotselog.MainActivity;
 import com.example.mpdagang.kotselog.OBDManager;
+import com.example.mpdagang.kotselog.PidElement;
 import com.example.mpdagang.kotselog.R;
 
 import java.util.ArrayList;
@@ -34,7 +43,6 @@ import java.util.ArrayList;
 public class CarOBDFrag extends Fragment {
     private static final String TAG = "CarOBDFrag";
     public GraphListAdapter mGraphListAdapter;
-    public ArrayList<String> availablePids;
     public ArrayList<String> setGraph;
     public StringBuilder messages;
     public StringBuilder wholeResponse;
@@ -59,9 +67,7 @@ public class CarOBDFrag extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-             text = intent.getStringExtra("theMessage");
-
-           // messages.append(text);
+            text = intent.getStringExtra("theMessage");
             wholeResponse.append(text);
 
             if (text.contains(">")){
@@ -74,11 +80,20 @@ public class CarOBDFrag extends Fragment {
                 * if response is No data or Stopped,
                 * 1. stop request thread and notify user
                 * 2. increment time delay for request
-                * 3. reset adapter and notify user if it is successfull,
+                * 3. reset adapter and notify user if it is successful,
                 * 4. start thread
                 *
                 * */
                 double value;
+                /*
+                * if(toggle > flag){
+                *
+                * }else if( flag == size && toggle == 0){
+                *
+                * }
+                *
+                * */
+
                 if(flag == 1 && toggle == 2) {
                     value = (double) o.calRPM(wholeResponse.toString());
                     testGraph.updateGraph(value); // green
@@ -144,8 +159,8 @@ public class CarOBDFrag extends Fragment {
 
         speedSetter = (EditText) view.findViewById(R.id.speedSet);
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, availablePids);
-        spinnerAdapter.add(" ");
+        ArrayAdapter<PidElement> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,((MainActivity)getActivity()).pidList);
+        spinnerAdapter.add(new PidElement("null"));
 
         Spinner option1 = (Spinner) view.findViewById(R.id.spinnerA1);
         option1.setAdapter(spinnerAdapter);
@@ -190,24 +205,39 @@ public class CarOBDFrag extends Fragment {
                         @Override
                         public void run() {
                             canSend = true;
-
+                            String modMessage;
+                            /*
+                            * while(canSend){
+                            *   if(toggle == flag){
+                            *       // request for pid number i
+                            *       //  - get pid command
+                            *       //  - build request
+                            *       //  - send request
+                            *       // increment toggle
+                            *   }
+                            *   if(i == number of pids being requested){
+                            *       // reset i to 0
+                            *   }
+                            *
+                            * }
+                            * */
                             while(canSend){
-                                String modMessage;
+
 
                                 if(toggle == 1 && flag == 1) {
-                                    modMessage = "010C1" + "\r"; // rpm
+                                    modMessage = "010C" + "1\r"; // rpm
                                     bytes = modMessage.getBytes();
                                     ((MainActivity) getActivity()).writeToStream(bytes);
                                     toggle = 2;
                                 }
                                 else if(toggle == 2 && flag == 2){
-                                    modMessage = "010B1" + "\r"; // intake manifold pressure
+                                    modMessage = "010B" + "1\r"; // intake manifold pressure
                                     bytes = modMessage.getBytes();
                                     ((MainActivity) getActivity()).writeToStream(bytes);
                                     toggle = 3;
                                 }
                                 else if(toggle == 3 && flag == 3){
-                                    modMessage = "01111" + "\r"; // throttle position
+                                    modMessage = "0111" + "1\r"; // throttle position
                                     bytes = modMessage.getBytes();
                                     ((MainActivity) getActivity()).writeToStream(bytes);
                                     toggle = 1;
@@ -232,45 +262,7 @@ public class CarOBDFrag extends Fragment {
                 Log.d(TAG,"testButton: starting stream");
                     View baby = test.getChildAt(0);
                     testGraph = (Activity_Animation002_Layout) baby.findViewById(R.id.pidGraph);
-                    /*streamer = new Runnable() {
 
-                        @Override
-                        public void run() {
-                            canSend = true;
-
-                            while(canSend){
-                                String modMessage;
-
-                                if(toggle == 1 && flag == 1) {
-                                    modMessage = "010C1" + "\r"; // rpm
-                                    bytes = modMessage.getBytes();
-                                    ((MainActivity) getActivity()).writeToStream(bytes);
-                                    toggle = 2;
-                                }
-                                else if(toggle == 2 && flag == 2){
-                                    modMessage = "010B1" + "\r"; // intake manifold pressure
-                                    bytes = modMessage.getBytes();
-                                    ((MainActivity) getActivity()).writeToStream(bytes);
-                                    toggle = 3;
-                                }
-                                else if(toggle == 3 && flag == 3){
-                                    modMessage = "01111" + "\r"; // throttle position
-                                    bytes = modMessage.getBytes();
-                                    ((MainActivity) getActivity()).writeToStream(bytes);
-                                    toggle = 1;
-                                }else{
-
-                                }
-
-                                try {
-                                    Thread.sleep(speed);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        }
-                    };*/
                 stream = new Thread(streamer);
                 stream.start();
             }
@@ -297,9 +289,8 @@ public class CarOBDFrag extends Fragment {
         wholeResponse = new StringBuilder();
         o = new OBDManager();
 
-        availablePids  = o.decodeAvailable("test");
         setGraph = new ArrayList<>();
-        setGraph.add("GRAPH A");
+        setGraph.add("GRAPH");
         mGraphListAdapter = new GraphListAdapter(getActivity(), setGraph);
     }
 

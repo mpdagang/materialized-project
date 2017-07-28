@@ -27,7 +27,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
     compile 'com.android.support:support-v4:25.2.0'
-    compile 'com.jjoe64:graphview:4.2.1'
-    compile 'com.androidplot:androidplot-core:1.4.3'
     testCompile 'junit:junit:4.12'
 }

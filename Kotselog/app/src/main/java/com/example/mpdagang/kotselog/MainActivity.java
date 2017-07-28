@@ -1,3 +1,11 @@
+/*
+	KotseLog 1.0
+	July 31, 2017
+	Marion Paulo A. Dagang
+
+	filename:
+*/
+
 package com.example.mpdagang.kotselog;
 
 import android.bluetooth.BluetoothDevice;
@@ -12,6 +20,7 @@ import com.example.mpdagang.kotselog.Fragments.NavFrag;
 import com.example.mpdagang.kotselog.Fragments.StartConFrag;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public BluetoothConnectionService mBlueConServ;
     public StringBuilder mainResponse;
     public String curResponse;
+    public HashMap<String,PidElement> pidHolder;
     public ArrayList<PidElement> pidList;
 
     //-------------------------------Functions-------------------------------
@@ -39,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         curResponse = new String();
         mViewPager = (ViewPager) findViewById(R.id.container);
         pidList = new ArrayList<>();
+        pidHolder = new HashMap<>();
         setupViewPager(mViewPager);
     }
 
@@ -63,5 +74,14 @@ public class MainActivity extends AppCompatActivity {
     }
     public void writeToStream(byte[] bytes){
         mBlueConServ.write(bytes);
+    }
+
+    public void setupPids( ArrayList<String> availablePids){
+        //this.pidList = availablePids;
+        for(int i = 0; i < availablePids.size(); i++){
+            this.pidHolder.put(availablePids.get(i), new PidElement(availablePids.get(i)));
+            this.pidList.add(new PidElement(availablePids.get(i)));
+        }
+
     }
 }

@@ -1,3 +1,11 @@
+/*
+	KotseLog 1.0
+	July 31, 2017
+	Marion Paulo A. Dagang
+
+	filename:
+*/
+
 package com.example.mpdagang.kotselog.Fragments;
 
 
@@ -29,6 +37,7 @@ import android.widget.Toast;
 
 import com.example.mpdagang.kotselog.DeviceListAdapter;
 import com.example.mpdagang.kotselog.MainActivity;
+import com.example.mpdagang.kotselog.OBDManager;
 import com.example.mpdagang.kotselog.R;
 
 import java.util.ArrayList;
@@ -180,10 +189,17 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
 
             messages.append(text);
             wholeResponse.append(text);
+            if(wholeResponse.toString().contains(">") && !wholeResponse.toString().contains("S")){
+                Log.d(TAG,"this " + wholeResponse.toString()+ " is the whole reply not needed");
+                wholeResponse = new StringBuilder();
+            }
 
             //incomingMessages.setText(messages);
-            if (wholeResponse.toString().contains(">") && wholeResponse.toString().contains("00") && wholeResponse.toString().contains("S")){
-                Log.d(TAG,"this " + wholeResponse.toString()+ " is the whole reply");
+            else if (wholeResponse.toString().contains(">") && wholeResponse.toString().contains("00") && wholeResponse.toString().contains("S")){
+                Log.d(TAG,"this " + wholeResponse.toString().substring(12)+ " is the whole reply Needed");
+                ((MainActivity)getActivity()).setupPids(OBDManager.decodeAvailable(wholeResponse.toString().substring(12)));
+                Log.d(TAG,"this " + ((MainActivity)getActivity()).pidList.toString() + " is the whole reply Needed");
+
                 wholeResponse = new StringBuilder();
                 //incomingMessages.setText(wholeResponse);
                 AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
@@ -233,29 +249,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
 
         lvNewDevices.setOnItemClickListener(StartConFrag.this);
 
-/*
-        btnONOFF.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: enabling/disabling bluetooth.");
-                enableDisableBT();
-            }
-        });*/
-        /*
-        btnEnableDisable_Discoverable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "btnEnableDisable_Discoverable: Making device discoverable for 300 seconds.");
-
-                Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-                startActivity(discoverableIntent);
-
-                IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-                getActivity().registerReceiver(mBroadcastReceiver2,intentFilter);
-            }
-        });*/
-
         btnDiscoverDev.setOnClickListener(new View.OnClickListener(){
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -284,34 +277,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 }
             }
         });
-        /*
-        btnStartConnection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startConnection();
-            }
-        });
-    */ /*
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG,"btnSend: sending Command");
-                wholeResponse = new StringBuilder();
-                String modMessage = etSend.getText().toString();
-                modMessage = modMessage + "\r";
-                bytes = modMessage.getBytes();
-                ((MainActivity)getActivity()).writeToStream(bytes);
-                etSend.setText("");
-            }
-        });
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Return to \n main navigation fragment", Toast.LENGTH_SHORT).show();
-                ((MainActivity)getActivity()).setViewPager(0);
-            }
-        });*/
 
         return view;
     }

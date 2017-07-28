@@ -26,10 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LogBook.LogBookActivity" />
-        <activity android:name=".LogBook.PlotTest" />
-        <activity android:name=".Animation.AnimationActivity001" />
-        <activity android:name=".Animation.AnimationActivity002"></activity>
     </application>
 
 </manifest>

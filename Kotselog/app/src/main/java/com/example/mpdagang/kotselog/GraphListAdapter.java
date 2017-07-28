@@ -1,3 +1,11 @@
+/*
+	KotseLog 1.0
+	July 31, 2017
+	Marion Paulo A. Dagang
+
+	filename:
+*/
+
 package com.example.mpdagang.kotselog;
 
 
@@ -31,7 +39,6 @@ public class GraphListAdapter extends ArrayAdapter<String> {
     public GraphListAdapter(Context context, ArrayList<String> pids){
         super(context, R.layout.graph_adapter_view,pids);
         this.mPids = pids;
-        //mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLayoutInflater = LayoutInflater.from(getContext());
 
     }
@@ -49,7 +56,6 @@ public class GraphListAdapter extends ArrayAdapter<String> {
 
                 if (pidName != null) {
                     pidName.setText(pName);
-                    //g.resume();
                 }
             }
         }
