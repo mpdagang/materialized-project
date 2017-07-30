@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.example.mpdagang.kotselog.DeviceListAdapter;
 import com.example.mpdagang.kotselog.MainActivity;
 import com.example.mpdagang.kotselog.OBDManager;
+import com.example.mpdagang.kotselog.PidElement;
 import com.example.mpdagang.kotselog.R;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
     public BluetoothAdapter mBluetoothAdapter;
     public BluetoothDevice mBTDevice;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+    public ArrayList<PidElement> selectedPid = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
 
     public StringBuilder messages;
@@ -193,15 +195,12 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 Log.d(TAG,"this " + wholeResponse.toString()+ " is the whole reply not needed");
                 wholeResponse = new StringBuilder();
             }
-
-            //incomingMessages.setText(messages);
             else if (wholeResponse.toString().contains(">") && wholeResponse.toString().contains("00") && wholeResponse.toString().contains("S")){
                 Log.d(TAG,"this " + wholeResponse.toString().substring(12)+ " is the whole reply Needed");
                 ((MainActivity)getActivity()).setupPids(OBDManager.decodeAvailable(wholeResponse.toString().substring(12)));
                 Log.d(TAG,"this " + ((MainActivity)getActivity()).pidList.toString() + " is the whole reply Needed");
 
                 wholeResponse = new StringBuilder();
-                //incomingMessages.setText(wholeResponse);
                 AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
                 a.setMessage("Kotselog connected to adapter");
                 a.setCancelable(false);
@@ -224,17 +223,11 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         Log.d(TAG, "onCreateView: called.");
         View view =  inflater.inflate(R.layout.fragment_start_con, container, false);
 
-        //backBtn = (Button) view.findViewById(R.id.backButton);
-        //btnONOFF = (Button) view.findViewById(R.id.btnONOFF);
-        //btnSend = (Button) view.findViewById(R.id.btnSend);
-        //btnEnableDisable_Discoverable = (Button) view.findViewById(R.id.btnDiscoverable_on_off);
         btnDiscoverDev = (Button) view.findViewById(R.id.btnFindUnpairedDevices);
-        //btnStartConnection = (Button) view.findViewById(R.id.btnStartConnection);
 
         lvNewDevices = (ListView) view.findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
-        //etSend = (EditText) view.findViewById(R.id.editText);
-        //incomingMessages = (TextView) view.findViewById(R.id.incomingMessage);
+
         messages = new StringBuilder();
         wholeResponse = new StringBuilder();
 

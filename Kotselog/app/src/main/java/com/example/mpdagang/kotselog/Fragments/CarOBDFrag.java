@@ -44,6 +44,7 @@ public class CarOBDFrag extends Fragment {
     private static final String TAG = "CarOBDFrag";
     public GraphListAdapter mGraphListAdapter;
     public ArrayList<String> setGraph;
+    public ArrayList<PidElement> selectedPid;
     public StringBuilder messages;
     public StringBuilder wholeResponse;
     public String text;
@@ -54,13 +55,17 @@ public class CarOBDFrag extends Fragment {
     private TextView speedDis;
     private EditText speedSetter;
 
+    private Spinner option1;
+    private Spinner option2;
+    private Spinner option3;
+
     private Thread stream;
     private Runnable streamer;
     public OBDManager o = new OBDManager();
     public boolean canSend = false;
     public byte[] bytes;
-    public int flag = 1;
-    public int toggle = 1;
+    public int flag = 0;
+    public int toggle = 0;
     public int speed = 200;
 
     public BroadcastReceiver cReceiver = new BroadcastReceiver() {
@@ -70,43 +75,38 @@ public class CarOBDFrag extends Fragment {
             text = intent.getStringExtra("theMessage");
             wholeResponse.append(text);
 
+            double value;
+
             if (text.contains(">")){
                 Log.d(TAG,"this " + wholeResponse.toString() + " is the whole reply , flag:"+ flag +" toggle:"+toggle+".");
-                /*
-                if(wholeResponse.toString().contains("STOP")){
-                    resetData();
 
-                }
-                * if response is No data or Stopped,
-                * 1. stop request thread and notify user
-                * 2. increment time delay for request
-                * 3. reset adapter and notify user if it is successful,
-                * 4. start thread
-                *
-                * */
-                double value;
-                /*
-                * if(toggle > flag){
-                *
-                * }else if( flag == size && toggle == 0){
-                *
-                * }
-                *
-                * */
-
-                if(flag == 1 && toggle == 2) {
-                    value = (double) o.calRPM(wholeResponse.toString());
+               /*
+               * if(flag < toggle){
+               *    value = o.calSensorValue(wholeResponse.toString(), selectedPid.get(flag).getId);
+               *    testGraph.updateGraph(value, flag);
+               *    if(flag == selectedPid.size()-1){
+                        flag = 0;
+                    }else{
+                        flag++;
+                    }
+               * }
+               * */
+                if(flag == 0 && toggle == 1) {
+                    //value = (double) o.calRPM(wholeResponse.toString());
+                    value = (double) o.calSensorValue(wholeResponse.toString(), selectedPid.get(flag).getId());
                     testGraph.updateGraph(value); // green
-                    flag = 2;
-                }
-                else if(flag == 2 && toggle == 3){
-                    value = (double) o.calIntakeManifoldPressure(wholeResponse.toString());
-                    testGraph.updateGraph3(value); //white
-                    flag = 3;
-                }else if(flag == 3 && toggle == 1){
-                    value = (double) o.calThrottlePos(wholeResponse.toString());
-                    testGraph.updateGraph2(value); //red
                     flag = 1;
+                }
+                else if(flag == 1 && toggle == 2){
+                    //value = (double) o.calIntakeManifoldPressure(wholeResponse.toString());
+                    value = (double) o.calSensorValue(wholeResponse.toString(), selectedPid.get(flag).getId());
+                    testGraph.updateGraph1(value); //red
+                    flag = 2;
+                }else if(flag == 2 && toggle == 0){
+                    //value = (double) o.calThrottlePos(wholeResponse.toString());
+                    value = (double) o.calSensorValue(wholeResponse.toString(), selectedPid.get(flag).getId());
+                    testGraph.updateGraph2(value); //white
+                    flag = 0;
                 }else{
 
                 }
@@ -162,13 +162,13 @@ public class CarOBDFrag extends Fragment {
         ArrayAdapter<PidElement> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,((MainActivity)getActivity()).pidList);
         spinnerAdapter.add(new PidElement("null"));
 
-        Spinner option1 = (Spinner) view.findViewById(R.id.spinnerA1);
+        option1 = (Spinner) view.findViewById(R.id.spinnerA1);
         option1.setAdapter(spinnerAdapter);
         option1.setSelection(spinnerAdapter.getCount()-1);
-        Spinner option2 = (Spinner) view.findViewById(R.id.spinnerA2);
+        option2 = (Spinner) view.findViewById(R.id.spinnerA2);
         option2.setAdapter(spinnerAdapter);
         option2.setSelection(spinnerAdapter.getCount()-1);
-        Spinner option3 = (Spinner) view.findViewById(R.id.spinnerA3);
+        option3 = (Spinner) view.findViewById(R.id.spinnerA3);
         option3.setAdapter(spinnerAdapter);
         option3.setSelection(spinnerAdapter.getCount()-1);
 
@@ -205,45 +205,50 @@ public class CarOBDFrag extends Fragment {
                         @Override
                         public void run() {
                             canSend = true;
+                            selectedPid = new ArrayList<>();
                             String modMessage;
-                            /*
-                            * while(canSend){
-                            *   if(toggle == flag){
-                            *       // request for pid number i
-                            *       //  - get pid command
-                            *       //  - build request
-                            *       //  - send request
-                            *       // increment toggle
-                            *   }
-                            *   if(i == number of pids being requested){
-                            *       // reset i to 0
-                            *   }
-                            *
-                            * }
-                            * */
+
+                            Log.d(TAG, "Option 1 has: "+((PidElement)option1.getSelectedItem()).getId()+" selected");
+                            Log.d(TAG, "Option 2 has: "+((PidElement)option2.getSelectedItem()).getId()+" selected");
+                            Log.d(TAG, "Option 3 has: "+((PidElement)option3.getSelectedItem()).getId()+" selected");
+                            selectedPid.add((PidElement)option1.getSelectedItem());
+                            selectedPid.add((PidElement)option2.getSelectedItem());
+                            selectedPid.add((PidElement)option3.getSelectedItem());
+                            //testGraph.setupGraph(selectedPid);
+
                             while(canSend){
 
-
-                                if(toggle == 1 && flag == 1) {
-                                    modMessage = "010C" + "1\r"; // rpm
+                                 if(toggle == flag){
+                                   modMessage = selectedPid.get(toggle).getId() + "1\r";
+                                   bytes = modMessage.getBytes();
+                                   ((MainActivity) getActivity()).writeToStream(bytes);
+                                   if(toggle == selectedPid.size()-1){
+                                       toggle = 0;
+                                   }else{
+                                       toggle++;
+                                   }
+                                 }
+                                /*
+                                if(toggle == 0 && flag == 0) {
+                                    modMessage = selectedPid.get(0).getId() + "1\r"; // rpm
+                                    bytes = modMessage.getBytes();
+                                    ((MainActivity) getActivity()).writeToStream(bytes);
+                                    toggle = 1;
+                                }
+                                else if(toggle == 1 && flag == 1){
+                                    modMessage = selectedPid.get(1).getId() + "1\r"; // intake manifold pressure
                                     bytes = modMessage.getBytes();
                                     ((MainActivity) getActivity()).writeToStream(bytes);
                                     toggle = 2;
                                 }
                                 else if(toggle == 2 && flag == 2){
-                                    modMessage = "010B" + "1\r"; // intake manifold pressure
+                                    modMessage = selectedPid.get(2).getId() + "1\r"; // throttle position
                                     bytes = modMessage.getBytes();
                                     ((MainActivity) getActivity()).writeToStream(bytes);
-                                    toggle = 3;
-                                }
-                                else if(toggle == 3 && flag == 3){
-                                    modMessage = "0111" + "1\r"; // throttle position
-                                    bytes = modMessage.getBytes();
-                                    ((MainActivity) getActivity()).writeToStream(bytes);
-                                    toggle = 1;
+                                    toggle = 0;
                                 }else{
-
-                                }
+                                    //continue;
+                                } */
 
                                 try {
                                     Thread.sleep(speed);

@@ -9,6 +9,8 @@
 package com.example.mpdagang.kotselog.Animation;
 
 import com.example.mpdagang.kotselog.LogBook.XYValue;
+import com.example.mpdagang.kotselog.PidElement;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,7 +39,6 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
 
     public ArrayList<Paint> graphColor;
     public ArrayList<Paint> fontColor;
-    public ArrayList<ArrayList<Float>> graphAt;
 
     public Paint transparent;
 
@@ -52,6 +53,8 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     public ArrayList<XYValue> yValueHolder1;
     public ArrayList<XYValue> yValueHolder2;
     public ArrayList<XYValue> yValueHolder3;
+    public ArrayList<ArrayList<Float>> graphHolder;
+    public ArrayList<PidElement> selectedPid;
 
     double frames_per_second;
     double frame_time_seconds;
@@ -153,6 +156,12 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
             }if(yValueHolder2.size() > 200){
                 yValueHolder2.remove(0);
             }
+            /*
+            for(int i = 0; i < graphHolder.size(); i++){
+                if(graphHolder.get(i).size() > 200){
+                    graphHolder.get(i).remove(0);
+                }
+            }*/
 
             surfaceHolder.unlockCanvasAndPost(canvas);
 
@@ -171,7 +180,21 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     }
 
     public void drawGraph(){
-
+        /*
+        * int xVal;
+        * float yVal = canvas.getHeight();;
+        * for(int i = 0; i < graphHolder.size(); i++){
+        *   xVal = canvas.getWidth();
+        *   graph1 = new Path();
+        *
+        *   graph1.moveTo(xVal-1, yVal-graphHolder.get(i).get(graphHolder.get(i).size()-1));
+        *   for(int dataPoint = graphHolder.get(i).size(); dataPoint >= 0; i--, xVal-=11){
+        *       graph1.lineTo(xVal, graphHolder.get(i).get(j));
+        *   }
+        *   this.canvas.drawPath(graph1,graphColor.get(i));
+        *   this.canvas.drawCircle((float) canvas.getWidth()-1, yVal-graphHolder.get(i).get(graphHolder.get(i).size()-1), 4, plotTracker);
+        *}
+        * */
         int xVal = canvas.getWidth();
         double yVal = canvas.getHeight();
 
@@ -223,23 +246,36 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         graph1.lineTo(testX, canvas.getHeight());
         this.canvas.drawPath(graph1, indicator);
 
-        this.canvas.drawText("RPM     : " + val1 + "rpm", 3, 38, fontColor.get(0));
-       this.canvas.drawText("Throttle Position: " + val2 + "%", 3, 77, fontColor.get(1));
-        this.canvas.drawText("Intake Manifold Pressure: " + val3 + "kPa", 3, 116, fontColor.get(2));
+        //this.canvas.drawText("RPM     : " + val1 + "rpm", 3, 38, fontColor.get(0));
+       //this.canvas.drawText("Throttle Position: " + val2 + "%", 3, 77, fontColor.get(1));
+        //this.canvas.drawText("Intake Manifold Pressure: " + val3 + "kPa", 3, 116, fontColor.get(2));
     }
-
+    /*
+    * public boolean updateGraph(float sensorValue, int graphNumber){
+    *   value = (int) sensorValue;
+    *   graphHolder.get(graphNumber).add(sensorValue);
+    *
+    * }
+    * */
+    public boolean setupGraph(ArrayList<PidElement> pidHolder){
+        graphHolder = new ArrayList<>();
+        for(int i = 0; i < pidHolder.size(); i++){
+            graphHolder.add(new ArrayList<Float>());
+        }
+        return true;
+    }
     public boolean updateGraph(double yVal){
         val1 = (int) yVal;
         yValueHolder.add(new XYValue(0, yVal*0.1));
         return true;
     }
 
-    public boolean updateGraph2(double yVal){
+    public boolean updateGraph1(double yVal){
         val2 = (int) yVal;
         yValueHolder1.add(new XYValue(0, yVal*3));
         return true;
     }
-    public boolean updateGraph3(double yVal){
+    public boolean updateGraph2(double yVal){
         val3 = (int) yVal;
         yValueHolder2.add(new XYValue(0, yVal*3));
         return true;

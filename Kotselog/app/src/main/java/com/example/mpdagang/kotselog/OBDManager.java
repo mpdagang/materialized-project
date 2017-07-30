@@ -142,6 +142,36 @@ public class OBDManager {
 
     }
 
+    public float calSensorValue(String response, String pid){
+        switch(pid){
+            case "0104":
+                return calEngineLoad(response);
+            case "0105":
+                return calEngineCoolantTemp(response);
+            case "0106":
+            case "0107":
+            case "0108":
+            case "0109":
+                return calTermFuelTrim(response);
+            case "010A":
+                return calFuelPressure(response);
+            case "010B":
+                return calIntakeManifoldPressure(response);
+            case "010C":
+                return calRPM(response);
+            case "010D":
+                return calVehicleSpeed(response);
+            case "010E":
+                return calTimingAdvance(response);
+            case "010F":
+                return calIntakeAirTemp(response);
+            case "0110":
+                return calMafAirFlow(response);
+            case "0111":
+                return calThrottlePos(response);
+        }
+        return 0;
+    }
     // Calculated Engine Load - 0104
     public float calEngineLoad( String response){
         String[] step1 = response.substring(6).split("\\s+");
