@@ -18,41 +18,7 @@ import java.util.ArrayList;
 
 public class OBDManager {
     private static final String TAG = "OBDManager";
-    /*
-    private static final ArrayList<PidElement> pidMasterList = new ArrayList<PidElement>() {{
-        add(new PidElement("0101", "1", "1", "1", 1, 1));
-        add(new PidElement("0102", "1", "1", "1", 1, 1));
-        add(new PidElement("0103", "1", "1", "1", 1, 1));
-        add(new PidElement("0104", "1", "1", "1", 1, 1));
-        add(new PidElement("0105", "1", "1", "1", 1, 1));
-        add(new PidElement("0106", "1", "1", "1", 1, 1));
-        add(new PidElement("0107", "1", "1", "1", 1, 1));
-        add(new PidElement("0108", "1", "1", "1", 1, 1));
-        add(new PidElement("0109", "1", "1", "1", 1, 1));
-        add(new PidElement("010A", "1", "1", "1", 1, 1));
-        add(new PidElement("010B", "1", "1", "1", 1, 1));
-        add(new PidElement("010C", "1", "1", "1", 1, 1));
-        add(new PidElement("010D", "1", "1", "1", 1, 1));
-        add(new PidElement("010E", "1", "1", "1", 1, 1));
-        add(new PidElement("010F", "1", "1", "1", 1, 1));
-        add(new PidElement("0110", "1", "1", "1", 1, 1));
-        add(new PidElement("0111", "1", "1", "1", 1, 1));
-        add(new PidElement("0112", "1", "1", "1", 1, 1));
-        add(new PidElement("0113", "1", "1", "1", 1, 1));
-        add(new PidElement("0114", "1", "1", "1", 1, 1));
-        add(new PidElement("0115", "1", "1", "1", 1, 1));
-        add(new PidElement("0116", "1", "1", "1", 1, 1));
-        add(new PidElement("0117", "1", "1", "1", 1, 1));
-        add(new PidElement("0118", "1", "1", "1", 1, 1));
-        add(new PidElement("0119", "1", "1", "1", 1, 1));
-        add(new PidElement("011A", "1", "1", "1", 1, 1));
-        add(new PidElement("011B", "1", "1", "1", 1, 1));
-        add(new PidElement("011C", "1", "1", "1", 1, 1));
-        add(new PidElement("011D", "1", "1", "1", 1, 1));
-        add(new PidElement("011E", "1", "1", "1", 1, 1));
-        add(new PidElement("011F", "1", "1", "1", 1, 1));
-        add(new PidElement("0120", "1", "1", "1", 1, 1));
-    }}; */
+    
     public String test = "A3 00 BE 3E B0 00";
     private static ArrayList<String> pidListA = new ArrayList<String>(){{
         add("0101");

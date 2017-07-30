@@ -41,18 +41,12 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     public ArrayList<Paint> fontColor;
 
     public Paint transparent;
-
     public Paint indicator;
     public Paint plotTracker;
 
     public Path eraser;
-
     public Path graph1;
 
-    public ArrayList<XYValue> yValueHolder;
-    public ArrayList<XYValue> yValueHolder1;
-    public ArrayList<XYValue> yValueHolder2;
-    public ArrayList<XYValue> yValueHolder3;
     public ArrayList<ArrayList<Float>> graphHolder;
     public ArrayList<PidElement> selectedPid;
 
@@ -64,11 +58,6 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
 
     public float testX = 100;
     public float testY = 0;
-
-    public int val1 = 0;
-    public int val2 = 0;
-    public int val3 = 0;
-    public int val4 = 0;
 
     Canvas canvas;
     SurfaceHolder surfaceHolder;
@@ -101,10 +90,6 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
 
         this.setOnTouchListener(this);
 
-        yValueHolder = new ArrayList<>();
-        yValueHolder1 = new ArrayList<>();
-        yValueHolder2 = new ArrayList<>();
-        yValueHolder3 = new ArrayList<>();
         setGraphPaint();
 
         frames_per_second = 20;
@@ -148,20 +133,11 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
             canvas.drawPaint(transparent);
             drawGraph();
 
-            if(yValueHolder.size() > 200){
-                yValueHolder.remove(0);
-            }
-            if(yValueHolder1.size() > 200){
-                yValueHolder1.remove(0);
-            }if(yValueHolder2.size() > 200){
-                yValueHolder2.remove(0);
-            }
-            /*
             for(int i = 0; i < graphHolder.size(); i++){
                 if(graphHolder.get(i).size() > 200){
                     graphHolder.get(i).remove(0);
                 }
-            }*/
+            }
 
             surfaceHolder.unlockCanvasAndPost(canvas);
 
@@ -180,66 +156,24 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     }
 
     public void drawGraph(){
-        /*
-        * int xVal;
-        * float yVal = canvas.getHeight();;
-        * for(int i = 0; i < graphHolder.size(); i++){
-        *   xVal = canvas.getWidth();
-        *   graph1 = new Path();
-        *
-        *   graph1.moveTo(xVal-1, yVal-graphHolder.get(i).get(graphHolder.get(i).size()-1));
-        *   for(int dataPoint = graphHolder.get(i).size(); dataPoint >= 0; i--, xVal-=11){
-        *       graph1.lineTo(xVal, graphHolder.get(i).get(j));
-        *   }
-        *   this.canvas.drawPath(graph1,graphColor.get(i));
-        *   this.canvas.drawCircle((float) canvas.getWidth()-1, yVal-graphHolder.get(i).get(graphHolder.get(i).size()-1), 4, plotTracker);
-        *}
-        * */
-        int xVal = canvas.getWidth();
-        double yVal = canvas.getHeight();
 
-        graph1 = new Path();
+         int xVal;
+         float yVal = canvas.getHeight();;
+         for(int i = 0; i < graphHolder.size(); i++){
+           xVal = canvas.getWidth();
+           graph1 = new Path();
 
-        graph1.moveTo(xVal-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()));
-        for(int i = yValueHolder.size()-1; i >= 0; i--, xVal-=11){
-            graph1.lineTo(xVal, (float) (yVal - yValueHolder.get(i).getY()));
-            if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
-                this.canvas.drawText(Integer.toString((int)(yValueHolder.get(i).getY()/0.1 )), testX,(float) (yVal - yValueHolder.get(i).getY()), fontColor.get(0));
-            }
+           graph1.moveTo(xVal-1, yVal-graphHolder.get(i).get(graphHolder.get(i).size()-1));
+           for(int dataPoint = graphHolder.get(i).size()-1; dataPoint >= 0; dataPoint--, xVal-=11){
+               graph1.lineTo(xVal, yVal - graphHolder.get(i).get(dataPoint));
+               if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
+                   // return to true value
+                   this.canvas.drawText(Float.toString(graphHolder.get(i).get(dataPoint)), testX, yVal - graphHolder.get(i).get(dataPoint), fontColor.get(i));
+               }
+           }
+           this.canvas.drawPath(graph1,graphColor.get(i));
+           this.canvas.drawCircle((float) canvas.getWidth()-1, yVal-graphHolder.get(i).get(graphHolder.get(i).size()-1), 4, plotTracker);
         }
-
-        this.canvas.drawPath(graph1,graphColor.get(0));
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder.get(yValueHolder.size()-1).getY()), 4, plotTracker);
-
-        graph1 = new Path();
-
-        xVal = canvas.getWidth();
-        yVal = canvas.getHeight();
-        graph1.moveTo(xVal-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()));
-        for(int i = yValueHolder1.size()-1; i >= 0; i--, xVal-=11){
-            graph1.lineTo(xVal, (float) (yVal - yValueHolder1.get(i).getY()));
-            if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
-                this.canvas.drawText(Integer.toString((int)(yValueHolder1.get(i).getY()/3 )), testX,(float) (yVal - yValueHolder1.get(i).getY()), fontColor.get(1));
-            }
-        }
-
-        this.canvas.drawPath(graph1,graphColor.get(1));
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder1.get(yValueHolder1.size()-1).getY()), 4, plotTracker);
-
-        graph1 = new Path();
-
-        xVal = canvas.getWidth();
-        yVal = canvas.getHeight();
-        graph1.moveTo(xVal-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()));
-        for(int i = yValueHolder2.size()-1; i >= 0; i--, xVal-=11){
-            graph1.lineTo(xVal, (float) (yVal - yValueHolder2.get(i).getY()));
-            if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
-                this.canvas.drawText(Integer.toString((int)(yValueHolder2.get(i).getY()/3 )), testX,(float) (yVal - yValueHolder2.get(i).getY()), fontColor.get(2));
-            }
-        }
-
-        this.canvas.drawPath(graph1,graphColor.get(2));
-        this.canvas.drawCircle((float) canvas.getWidth()-1, (float) (yVal - yValueHolder2.get(yValueHolder2.size()-1).getY()), 4, plotTracker);
 
         graph1 = new Path();
         graph1.moveTo(testX, 0);
@@ -250,34 +184,18 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
        //this.canvas.drawText("Throttle Position: " + val2 + "%", 3, 77, fontColor.get(1));
         //this.canvas.drawText("Intake Manifold Pressure: " + val3 + "kPa", 3, 116, fontColor.get(2));
     }
-    /*
-    * public boolean updateGraph(float sensorValue, int graphNumber){
-    *   value = (int) sensorValue;
-    *   graphHolder.get(graphNumber).add(sensorValue);
-    *
-    * }
-    * */
+
+     public boolean updateGraph(float sensorValue, int graphNumber){
+         // compute graphical value of sensorValue
+       graphHolder.get(graphNumber).add(sensorValue);
+        return true;
+     }
+
     public boolean setupGraph(ArrayList<PidElement> pidHolder){
         graphHolder = new ArrayList<>();
         for(int i = 0; i < pidHolder.size(); i++){
             graphHolder.add(new ArrayList<Float>());
         }
-        return true;
-    }
-    public boolean updateGraph(double yVal){
-        val1 = (int) yVal;
-        yValueHolder.add(new XYValue(0, yVal*0.1));
-        return true;
-    }
-
-    public boolean updateGraph1(double yVal){
-        val2 = (int) yVal;
-        yValueHolder1.add(new XYValue(0, yVal*3));
-        return true;
-    }
-    public boolean updateGraph2(double yVal){
-        val3 = (int) yVal;
-        yValueHolder2.add(new XYValue(0, yVal*3));
         return true;
     }
 

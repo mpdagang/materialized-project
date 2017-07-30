@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setupPids( ArrayList<String> availablePids){
-        //this.pidList = availablePids;
         for(int i = 0; i < availablePids.size(); i++){
             this.pidHolder.put(availablePids.get(i), new PidElement(availablePids.get(i)));
             this.pidList.add(new PidElement(availablePids.get(i)));
