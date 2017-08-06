@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: GraphListAdapter.java
 */
 
 package com.example.mpdagang.kotselog;
@@ -28,12 +28,11 @@ import java.util.List;
 /**
  * Created by MPDagang on 03/07/2017.
  */
-
+// Array adapter for the graph that displays sensor data
 public class GraphListAdapter extends ArrayAdapter<String> {
     private static final String TAG = "GraphListAdapter";
     private LayoutInflater mLayoutInflater;
     private ArrayList<String> mPids;
-    private int  mViewResourceId;
 
 
     public GraphListAdapter(Context context, ArrayList<String> pids){
@@ -48,7 +47,7 @@ public class GraphListAdapter extends ArrayAdapter<String> {
             convertView = mLayoutInflater.inflate(R.layout.graph_adapter_view, parent, false);
 
             String pName = mPids.get(position);
-
+            // setup the graph animation view
             if (pName != null) {
                 TextView pidName = (TextView) convertView.findViewById(R.id.pidName);
                 Activity_Animation002_Layout g = (Activity_Animation002_Layout) convertView.findViewById(R.id.pidGraph);

@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: StartConFrag.java
 */
 
 package com.example.mpdagang.kotselog.Fragments;
@@ -44,36 +44,28 @@ import com.example.mpdagang.kotselog.R;
 import java.util.ArrayList;
 import java.util.UUID;
 
-
+// Fragment that establishes bluetooth connection and gets the necessary parameters for logging
 public class StartConFrag extends Fragment implements AdapterView.OnItemClickListener, DialogInterface.OnClickListener{
     private static final String TAG = "StartConFragment";
+    // standard UUID for OBD Bluetooth adapters
     private static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     public BluetoothAdapter mBluetoothAdapter;
     public BluetoothDevice mBTDevice;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
-    public ArrayList<PidElement> selectedPid = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
 
     public StringBuilder messages;
     public StringBuilder wholeResponse;
 
-    public Button btnEnableDisable_Discoverable;
     public Button btnDiscoverDev;
-    public Button btnStartConnection;
-    public Button btnSend;
-    public Button backBtn;
-    public Button btnONOFF;
-    public EditText etSend;
     public ListView lvNewDevices;
-    public TextView incomingMessages;
-    public byte[] bytes;
 
-    // Create a BroadcastReceiver for ACTION_FOUND
+    // Create a broadcast receiver for ACTION_FOUND
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            // When discovery finds a device
+            // executes when discovery finds a device
             if (action.equals(mBluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
 
@@ -95,10 +87,10 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         }
     };
 
-    /**
-     * Broadcast Receiver for changes made to bluetooth states such as:
-     * 1) Discoverability mode on/off or expire.
-     */
+
+     //broadcast beceiver for changes made to bluetooth states such as:
+     // discoverability mode on/off or expire.
+
     private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
 
         @Override
@@ -110,11 +102,11 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 int mode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
 
                 switch (mode) {
-                    //Device is in Discoverable Mode
+                    //device is in discoverable dode
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
                         Log.d(TAG, "mBroadcastReceiver2: Discoverability Enabled.");
                         break;
-                    //Device not in discoverable mode
+                    //device not in discoverable mode
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
                         Log.d(TAG, "mBroadcastReceiver2: Discoverability Disabled. Able to receive connections.");
                         break;
@@ -133,10 +125,10 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         }
     };
 
-    /**
-     * Broadcast Receiver for listing devices that are not yet paired
-     * -Executed by btnDiscover() method.
-     */
+
+     // broadcast receiver for listing bluetooth devices
+     // executed by btnDiscover() method.
+
     private BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -154,9 +146,9 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         }
     };
 
-    /**
-     * Broadcast Receiver that detects bond state changes (Pairing status changes)
-     */
+
+     // broadcast receiver that detects bond state changes
+
     private final BroadcastReceiver mBroadcastReceiver4 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -182,7 +174,7 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
             }
         }
     };
-
+    // broadcast receiver that builds response
     public BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -191,16 +183,20 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
 
             messages.append(text);
             wholeResponse.append(text);
+            // catch response not related to available sensors
             if(wholeResponse.toString().contains(">") && !wholeResponse.toString().contains("S")){
                 Log.d(TAG,"this " + wholeResponse.toString()+ " is the whole reply not needed");
                 wholeResponse = new StringBuilder();
             }
+            // catch response with list of available sensors
             else if (wholeResponse.toString().contains(">") && wholeResponse.toString().contains("00") && wholeResponse.toString().contains("S")){
                 Log.d(TAG,"this " + wholeResponse.toString().substring(12)+ " is the whole reply Needed");
+                // decode bit encoded response
                 ((MainActivity)getActivity()).setupPids(OBDManager.decodeAvailable(wholeResponse.toString().substring(12)));
                 Log.d(TAG,"this " + ((MainActivity)getActivity()).pidList.toString() + " is the whole reply Needed");
 
                 wholeResponse = new StringBuilder();
+                // prompt window alerting user for a successful connection
                 AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
                 a.setMessage("Kotselog connected to adapter");
                 a.setCancelable(false);
@@ -209,8 +205,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
                 alert.setTitle("Success");
                 alert.show();
             }
-
-
 
             Log.d(TAG,"Data written on field");
         }
@@ -231,9 +225,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         messages = new StringBuilder();
         wholeResponse = new StringBuilder();
 
-        //setup inputStream listener
-
-
         //Broadcasts when bond state changes (ie:pairing)
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         getActivity().registerReceiver(mBroadcastReceiver4, filter);
@@ -241,7 +232,7 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         lvNewDevices.setOnItemClickListener(StartConFrag.this);
-
+        // start function do discover bluetooth adapter
         btnDiscoverDev.setOnClickListener(new View.OnClickListener(){
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -303,8 +294,6 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
         }
     }
 
-
-
     //create method for starting connection
     //***connection will fail and app will crash if not paired
     public void startConnection(){
@@ -334,14 +323,12 @@ public class StartConFrag extends Fragment implements AdapterView.OnItemClickLis
 
     }
 
+     //Method required for all devices running API23+
+     //Android must programmatically check the permissions for bluetooth. Putting the proper permissions
+     //in the manifest is not enough.
 
-    /**
-     * Method required for all devices running API23+
-     * Android must programmatically check the permissions for bluetooth. Putting the proper permissions
-     * in the manifest is not enough.
-     *
-     * NOTE: This will only execute on versions > LOLLIPOP because it is not needed otherwise.
-     */
+     //This will only execute on versions > LOLLIPOP because it is not needed otherwise.
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){

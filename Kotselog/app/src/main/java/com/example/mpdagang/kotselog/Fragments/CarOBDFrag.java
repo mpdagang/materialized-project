@@ -67,6 +67,7 @@ public class CarOBDFrag extends Fragment {
     public int toggle = 0;
     public int speed = 200;
 
+    //broadcast receiver that listens and builds the response from a sensor data request
     public BroadcastReceiver cReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -75,10 +76,10 @@ public class CarOBDFrag extends Fragment {
             wholeResponse.append(text);
 
             float value;
-
+            // translate the response once it is complete
             if (text.contains(">")){
                 Log.d(TAG,"this " + wholeResponse.toString() + " is the whole reply , flag:"+ flag +" toggle:"+toggle+".");
-
+                // conditions execute once the response matches the request received
                 if(flag < toggle){
                    value = o.calSensorValue(wholeResponse.toString(), selectedPid.get(flag).getId());
                    testGraph.updateGraph(value, flag);
@@ -88,7 +89,7 @@ public class CarOBDFrag extends Fragment {
                     testGraph.updateGraph(value, flag);
                     flag = 0;
                 }
-                wholeResponse = new StringBuilder();
+                wholeResponse = new StringBuilder(); // reset the response builder
             }
 
             text = null;
@@ -99,14 +100,14 @@ public class CarOBDFrag extends Fragment {
     public CarOBDFrag() {
         // Required empty public constructor
     }
+
+    // function that resets the variables used in the logging loop
     public boolean resetDatalog(){
 
         canSend = false;
-        toggle = 1;
-        flag = 1;
-        speed = speed + 100;
+        toggle = 0;
+        flag = 0;
         stream = new Thread(streamer);
-        stream.start();
         return true;
     }
 
@@ -135,10 +136,11 @@ public class CarOBDFrag extends Fragment {
         speedDis.setText("current speed request: "+speed+"m/s");
 
         speedSetter = (EditText) view.findViewById(R.id.speedSet);
-
+        // get the available sensor data list from MainActivity
         ArrayAdapter<PidElement> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,((MainActivity)getActivity()).pidList);
         spinnerAdapter.add(new PidElement("null"));
 
+        // set the selection fields with the available sensor data
         option1 = (Spinner) view.findViewById(R.id.spinnerA1);
         option1.setAdapter(spinnerAdapter);
         option1.setSelection(spinnerAdapter.getCount()-1);
@@ -149,6 +151,7 @@ public class CarOBDFrag extends Fragment {
         option3.setAdapter(spinnerAdapter);
         option3.setSelection(spinnerAdapter.getCount()-1);
 
+        // start graph animation button
         startLog.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -159,15 +162,20 @@ public class CarOBDFrag extends Fragment {
 
         });
 
+        // stop both Logging loop and graph animation
+        // triggers function that resets variables for logging loop
         stopLog.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                     View baby = test.getChildAt(0);
                     Activity_Animation002_Layout anotherBaby = (Activity_Animation002_Layout) baby.findViewById(R.id.pidGraph);
                     anotherBaby.pause();
+                resetDatalog();
             }
-        });
 
+
+        });
+        // sets the specified request speed by the user
         setButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +184,7 @@ public class CarOBDFrag extends Fragment {
             }
         });
 
-
+        // Logging Loop
         streamer = new Runnable() {
 
                         @Override
@@ -184,7 +192,7 @@ public class CarOBDFrag extends Fragment {
                             canSend = true;
                             selectedPid = new ArrayList<>();
                             String modMessage;
-
+                            // Get the sensor data which the application will listen to
                             Log.d(TAG, "Option 1 has: "+((PidElement)option1.getSelectedItem()).getId()+" selected");
                             Log.d(TAG, "Option 2 has: "+((PidElement)option2.getSelectedItem()).getId()+" selected");
                             Log.d(TAG, "Option 3 has: "+((PidElement)option3.getSelectedItem()).getId()+" selected");
@@ -192,7 +200,8 @@ public class CarOBDFrag extends Fragment {
                             selectedPid.add((PidElement)option2.getSelectedItem());
                             selectedPid.add((PidElement)option3.getSelectedItem());
                             testGraph.setupGraph(selectedPid);
-
+                            // request loop that sends a request for a sensor data
+                            // each sensor request will send only if the request prior to it has received a response
                             while(canSend){
 
                                  if(toggle == flag){
@@ -215,7 +224,7 @@ public class CarOBDFrag extends Fragment {
                         }
                     };
 
-
+        // start request
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,7 +249,8 @@ public class CarOBDFrag extends Fragment {
 
         return view;
     }
-
+    // sets the graph to be used for logging
+    //
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -253,7 +263,7 @@ public class CarOBDFrag extends Fragment {
         setGraph.add("GRAPH");
         mGraphListAdapter = new GraphListAdapter(getActivity(), setGraph);
     }
-
+    // registers the broadcast receiver for bluetooth transaction on App resume
     @Override
     public void onResume() {
         super.onResume();
@@ -264,7 +274,7 @@ public class CarOBDFrag extends Fragment {
             Log.d(TAG, "Unable to register predefined Receivers");
         }
     }
-
+    // uregisters the broadcast receiver for bluetooth transaction on App pause
     @Override
     public void onPause() {
         Log.d(TAG, "onPause: called.");

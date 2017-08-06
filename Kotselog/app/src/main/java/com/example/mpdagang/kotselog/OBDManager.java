@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: OBDManager.java
 */
 
 package com.example.mpdagang.kotselog;
@@ -15,12 +15,13 @@ import java.util.ArrayList;
 /**
  * Created by MPDagang on 05/07/2017.
  */
-
+// class responsible for sensor data interpretations and computations
 public class OBDManager {
     private static final String TAG = "OBDManager";
-    
+
     public String test = "A3 00 BE 3E B0 00";
     private static ArrayList<String> pidListA = new ArrayList<String>(){{
+        // first 32 generic sensor Pids
         add("0101");
         add("0102");
         add("0103");
@@ -54,6 +55,7 @@ public class OBDManager {
         add("011F");
         add("0120");
     }};
+    // array used to correct hexadecimal representations
     private static String[] staticLookup = new String[] {
             "0000",
             "0001",
@@ -77,7 +79,7 @@ public class OBDManager {
 
     }
 
-
+    // function that decodes the hex and bit encoded response to fidn out which sensors are available in a vehicle
     public static ArrayList<String> decodeAvailable(String response){
         String step1 = response.replaceAll("\\s+", "").replaceAll(">", "");
         String step2 = step1.substring(4);
@@ -108,6 +110,7 @@ public class OBDManager {
 
     }
 
+    // function that returns the decimal value of a sensor data
     public float calSensorValue(String response, String pid){
         switch(pid){
             case "0104":

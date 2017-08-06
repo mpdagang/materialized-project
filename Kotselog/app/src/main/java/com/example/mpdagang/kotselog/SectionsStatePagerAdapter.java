@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: SectionStatePager.java
 */
 
 package com.example.mpdagang.kotselog;
@@ -19,6 +19,7 @@ import java.util.List;
  * Created by MPDagang on 20/06/2017.
  */
 
+// class for Menu navigation
 public class SectionsStatePagerAdapter extends FragmentStatePagerAdapter{
 
     private final List<Fragment> mFragmentList = new ArrayList<>();

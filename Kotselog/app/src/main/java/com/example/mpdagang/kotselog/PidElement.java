@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: PidElement.java
 */
 
 package com.example.mpdagang.kotselog;
@@ -12,6 +12,7 @@ package com.example.mpdagang.kotselog;
  * Created by MPDagang on 09/07/2017.
  */
 
+// class that represenst a sensor's parameters
 public class PidElement {
     private String id;
     private String name;
@@ -62,6 +63,7 @@ public class PidElement {
         return value;
     }
 
+    // set the parameters of a sensor
     private void setSubAttributes(){
         switch (this.id) {
             case "null":
@@ -157,7 +159,6 @@ public class PidElement {
                 this.min = -40;
                 this.max = 215;
                 break;
-
             case "0110":
                 this.name = "MAF Air Flow Rate";
                 this.codeName = "MAF";
@@ -194,6 +195,31 @@ public class PidElement {
                 this.max = (float)99.2;
                 break;
         }
+    }
+    // function that translates the sensor data to a value for the graph view animation
+    public static float getSensorGraphValue( float dataPoint, float yVal, PidElement pid){
+        switch(pid.getId()){
+            case "0104":
+            case "010B":
+            case "0111":
+                return dataPoint*3;
+            case "0105":
+            case "010F":
+                return (yVal/3) + dataPoint;
+            case "0106":
+            case "0107":
+            case "0108":
+            case "0109":
+            case "010E":
+                return (yVal/2) + dataPoint;
+            case "010A":
+            case "010C":
+            case "0110":
+                return dataPoint * ((float) 0.1);
+            case "010D":
+                return dataPoint* ((float) 1.1);
+        }
+        return dataPoint;
     }
 
     @Override

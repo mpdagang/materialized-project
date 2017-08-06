@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: MainActivity.java
 */
 
 package com.example.mpdagang.kotselog;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         pidHolder = new HashMap<>();
         setupViewPager(mViewPager);
     }
-
+    // function that sets the menu view elements
     private void setupViewPager(ViewPager viewPager){
         mSectionsStatePagerAdapter.addFragment(new NavFrag(), "Navigation");
         mSectionsStatePagerAdapter.addFragment(new StartConFrag(), "Start Connection");
@@ -72,10 +72,11 @@ public class MainActivity extends AppCompatActivity {
     public void setBluetoothConnectionService(){
         mBlueConServ = new BluetoothConnectionService(MainActivity.this);
     }
+    // function that writes request to the bluetooth data stream
     public void writeToStream(byte[] bytes){
         mBlueConServ.write(bytes);
     }
-
+    // function that saves the sensor data avaialble in the vehicle
     public void setupPids( ArrayList<String> availablePids){
         for(int i = 0; i < availablePids.size(); i++){
             this.pidHolder.put(availablePids.get(i), new PidElement(availablePids.get(i)));

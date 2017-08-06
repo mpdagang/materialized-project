@@ -3,12 +3,11 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: Activity_Animation002_Layout.java
 */
 
 package com.example.mpdagang.kotselog.Animation;
 
-import com.example.mpdagang.kotselog.LogBook.XYValue;
 import com.example.mpdagang.kotselog.PidElement;
 
 import android.content.Context;
@@ -34,6 +33,9 @@ import java.util.ArrayList;
  */
 
 public class Activity_Animation002_Layout extends SurfaceView implements Runnable, SurfaceHolder.Callback, View.OnTouchListener{
+
+    private static final String TAG = "Activity_Animation002_Layout";
+
     Thread thread = null;
     boolean canDraw = true;
 
@@ -55,9 +57,8 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     double frame_time_ms;
     double frame_time_ns;
     double tLF, tEOR, delta_t;
-
     public float testX = 100;
-    public float testY = 0;
+
 
     Canvas canvas;
     SurfaceHolder surfaceHolder;
@@ -117,7 +118,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         frame_time_ns = frame_time_ms*1000000;
     }
 
-
+    // run() executed to animate graph
     @Override
     public void run() {
         tLF = System.nanoTime();
@@ -132,7 +133,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
             canvas = surfaceHolder.lockCanvas();
             canvas.drawPaint(transparent);
             drawGraph();
-
+            // condition that regulates the array sizes
             for(int i = 0; i < graphHolder.size(); i++){
                 if(graphHolder.get(i).size() > 200){
                     graphHolder.get(i).remove(0);
@@ -140,7 +141,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
             }
 
             surfaceHolder.unlockCanvasAndPost(canvas);
-
+            // following codes maintains a smooth graph animation
             tEOR = System.nanoTime();
             delta_t = frame_time_ns - (tEOR - tLF);
 
@@ -158,47 +159,52 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     public void drawGraph(){
 
          int xVal;
-         float yVal = canvas.getHeight();;
-         for(int i = 0; i < graphHolder.size(); i++){
+         float yVal = canvas.getHeight();
+         float tempHolder;
+         int position = 38;
+        // loop that update the appearance of the graphs based on the current set of data points on each graph
+         for(int i = 0; i < graphHolder.size(); i++, position+=40){
            xVal = canvas.getWidth();
            graph1 = new Path();
 
-           graph1.moveTo(xVal-1, yVal-graphHolder.get(i).get(graphHolder.get(i).size()-1));
+             this.canvas.drawText("-"+selectedPid.get(i).toString()+": "+ String.format( "%.2f",graphHolder.get(i).get(graphHolder.get(i).size() - 1))+" "+selectedPid.get(i).getSymbol(), 3, position, fontColor.get(i));
+             tempHolder = PidElement.getSensorGraphValue(graphHolder.get(i).get(graphHolder.get(i).size()-1),yVal,selectedPid.get(i));
+             graph1.moveTo(xVal-1, yVal - tempHolder );
+             this.canvas.drawCircle((float) canvas.getWidth()-1, yVal-tempHolder, 4, plotTracker);
+
            for(int dataPoint = graphHolder.get(i).size()-1; dataPoint >= 0; dataPoint--, xVal-=11){
-               graph1.lineTo(xVal, yVal - graphHolder.get(i).get(dataPoint));
+               tempHolder = PidElement.getSensorGraphValue(graphHolder.get(i).get(dataPoint),yVal,selectedPid.get(i));
+               graph1.lineTo(xVal, yVal - tempHolder);
                if(xVal >= ((int) testX - 5) && xVal <= ((int) testX + 5)){
                    // return to true value
-                   this.canvas.drawText(Float.toString(graphHolder.get(i).get(dataPoint)), testX, yVal - graphHolder.get(i).get(dataPoint), fontColor.get(i));
+                   this.canvas.drawText(String.format( "%.2f",graphHolder.get(i).get(dataPoint)), testX, yVal - tempHolder, fontColor.get(i));
                }
            }
            this.canvas.drawPath(graph1,graphColor.get(i));
-           this.canvas.drawCircle((float) canvas.getWidth()-1, yVal-graphHolder.get(i).get(graphHolder.get(i).size()-1), 4, plotTracker);
         }
 
         graph1 = new Path();
         graph1.moveTo(testX, 0);
         graph1.lineTo(testX, canvas.getHeight());
         this.canvas.drawPath(graph1, indicator);
-
-        //this.canvas.drawText("RPM     : " + val1 + "rpm", 3, 38, fontColor.get(0));
-       //this.canvas.drawText("Throttle Position: " + val2 + "%", 3, 77, fontColor.get(1));
-        //this.canvas.drawText("Intake Manifold Pressure: " + val3 + "kPa", 3, 116, fontColor.get(2));
     }
-
+    // function that adds a data point to a certain graph of pid data
      public boolean updateGraph(float sensorValue, int graphNumber){
-         // compute graphical value of sensorValue
-       graphHolder.get(graphNumber).add(sensorValue);
+        graphHolder.get(graphNumber).add(sensorValue);
         return true;
      }
-
+    // function that sets the graph holding the data points and the pid holder
+    // used to map with the sensors being streamed
     public boolean setupGraph(ArrayList<PidElement> pidHolder){
         graphHolder = new ArrayList<>();
+        selectedPid = new ArrayList<>();
         for(int i = 0; i < pidHolder.size(); i++){
             graphHolder.add(new ArrayList<Float>());
+            selectedPid.add(pidHolder.get(i));
         }
         return true;
     }
-
+    // function that sets all the colors used for the graph
     private void setGraphPaint(){
         int i;
         graphColor = new ArrayList<>();
@@ -237,7 +243,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         plotTracker = new Paint();
         plotTracker.setColor(Color.BLUE);
         plotTracker.setStyle(Paint.Style.FILL);
-    }
+    }// stops the animation of the graph
     public void pause(){
         canDraw = false;
         while(true) {
@@ -250,7 +256,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
         }
         thread = null;
     }
-
+    //restarts the animation of the graph
     public void resume(){
         canDraw = true;
         thread = new Thread(this);
@@ -266,6 +272,7 @@ public class Activity_Animation002_Layout extends SurfaceView implements Runnabl
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {}
 
+    //function that takes the position from the last touch in the canvas
     @Override
     public boolean onTouch(View v, MotionEvent m) {
         // touch event sets where the vertical indicator is placed

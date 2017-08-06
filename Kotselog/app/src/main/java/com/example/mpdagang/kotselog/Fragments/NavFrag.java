@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: NavFrag.java
 */
 
 package com.example.mpdagang.kotselog.Fragments;
@@ -19,13 +19,12 @@ import android.widget.Toast;
 import com.example.mpdagang.kotselog.MainActivity;
 import com.example.mpdagang.kotselog.R;
 
-
+// Fragment that allows user to navigate to different components of the application
 public class NavFrag extends Fragment {
-
     private static final String TAG = "NavFrag";
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_nav, container, false);
 

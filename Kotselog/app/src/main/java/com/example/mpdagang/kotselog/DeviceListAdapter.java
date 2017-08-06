@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: DeviceListAdapter.java
 */
 
 package com.example.mpdagang.kotselog;

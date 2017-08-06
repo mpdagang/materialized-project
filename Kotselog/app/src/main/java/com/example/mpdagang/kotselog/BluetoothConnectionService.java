@@ -3,7 +3,7 @@
 	July 31, 2017
 	Marion Paulo A. Dagang
 
-	filename:
+	filename: BluetoothConnectionService.java
 */
 
 package com.example.mpdagang.kotselog;
@@ -27,10 +27,8 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-/**
- * Created by User on 12/21/2016.
- */
 
+// Service that handles bluetooth operations in the application
 public class BluetoothConnectionService extends Service{
     private static final String TAG = "BluetoothConnectionServ";
     private static final String appName = "MYAPP";
@@ -60,11 +58,11 @@ public class BluetoothConnectionService extends Service{
     public IBinder onBind(Intent intent) {
         return null;
     }
-    /**
-     * This thread runs while listening for incoming connections. Acts
-     * like a server-side client and runs until a connection is accepted
-     * or cancelled.
-     */
+
+      // This thread runs while listening for incoming connections. Acts
+      // like a server-side client and runs until a connection is accepted
+      // or cancelled.
+
 
     //-------------------------- Internal Classes --------------------------
     private class AcceptThread extends Thread {
@@ -124,11 +122,11 @@ public class BluetoothConnectionService extends Service{
 
     }
 
-    /**
-     * This thread runs while attempting to make an outgoing connection
-     * with a device. It runs straight through; the connection either
-     * succeeds or fails.
-     */
+
+     // This thread runs while attempting to make an outgoing connection
+     // with a device. It runs straight through; the connection either
+     // succeeds or fails.
+
     private class ConnectThread extends Thread {
         private BluetoothSocket mmSocket;
 
@@ -188,10 +186,10 @@ public class BluetoothConnectionService extends Service{
         }
     }
 
-    /**
-     ConnectedThread for maintaining the BTConnection, Sending the data, and
-     receiving incoming data through input/output streams respectively.
-     **/
+
+     // ConnectedThread for maintaining the BTConnection, Sending the data, and
+     // receiving incoming data through input/output streams respectively.
+
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
@@ -247,7 +245,7 @@ public class BluetoothConnectionService extends Service{
             }
         }
 
-        //Call this from the main activity to send data to the remote device
+        //Call this from the MainActivity to send data to the remote device
         public void write(byte[] bytes) {
             String text = new String(bytes, Charset.defaultCharset());
             Log.d(TAG, "write: Writing to outputstream: " + text);
@@ -257,7 +255,7 @@ public class BluetoothConnectionService extends Service{
                 Log.e(TAG, "write: Error writing to output stream. " + e.getMessage() );
             }
         }
-
+        // function that sends the commands that sets the bluetooth adapter
         private void setAdapter(){
             Runnable set = new Runnable() {
                 @Override
@@ -313,7 +311,7 @@ public class BluetoothConnectionService extends Service{
             new Thread(set).start();
         }
 
-        /* Call this from the main activity to shutdown the connection */
+        // Call this from the MainActivity to shutdown the connection
         public void cancel() {
             try {
                 mmSocket.close();
@@ -324,10 +322,10 @@ public class BluetoothConnectionService extends Service{
     // ---------------- Class Functions -----------------
 
 
-    /**
-     * Start the chat service. Specifically start AcceptThread to begin a
-     * session in listening (server) mode. Called by the Activity onResume()
-     */
+
+     //Start the chat service. Specifically start AcceptThread to begin a
+     //session in listening (server) mode. Called by the Activity onResume()
+
     public synchronized void start() {
         Log.d(TAG, "start");
 
@@ -342,16 +340,16 @@ public class BluetoothConnectionService extends Service{
         }
     }
 
-    /**
 
-     AcceptThread starts and sits waiting for a connection.
-     Then ConnectThread starts and attempts to make a connection with the other devices AcceptThread.
-     **/
+
+     //AcceptThread starts and sits waiting for a connection.
+     //Then ConnectThread starts and attempts to make a connection with the other devices AcceptThread.
+
 
     public void startClient(BluetoothDevice device, UUID uuid){
         Log.d(TAG, "startClient: Started.");
 
-        //initprogress dialog
+        //init progress dialog
         mProgressDialog = ProgressDialog.show(mContext,"Connecting Bluetooth"
                 ,"Please Wait...",true);
 
@@ -369,12 +367,11 @@ public class BluetoothConnectionService extends Service{
 
     }
 
-    /**
-     * Write to the ConnectedThread in an unsynchronized manner
-     *
-     * @param out The bytes to write
-     * @see ConnectedThread#write(byte[])
-     */
+     //Write to the ConnectedThread in an unsynchronized manner
+
+     // @param out The bytes to write
+     //@see ConnectedThread#write(byte[])
+
     public void write(byte[] out) {
         // Create temporary object
         ConnectedThread r;
